@@ -1,0 +1,38 @@
+<svg width="520" height="160" viewBox="0 0 520 160" xmlns="http://www.w3.org/2000/svg">
+  <!-- Dark background -->
+  <rect x="0" y="0" width="520" height="160" fill="#111827"/>
+
+  <!-- DNA Helix (brighter colors for dark mode) -->
+  <!-- Left strand -->
+  <path d="M80 40 
+           C60 70, 60 110, 80 140"
+        fill="none" stroke="#60A5FA" stroke-width="4"/>
+
+  <!-- Right strand -->
+  <path d="M120 40 
+           C140 70, 140 110, 120 140"
+        fill="none" stroke="#34D399" stroke-width="4"/>
+
+  <!-- Rungs -->
+  <line x1="80" y1="55" x2="120" y2="55" stroke="#60A5FA" stroke-width="3"/>
+  <line x1="80" y1="75" x2="120" y2="75" stroke="#34D399" stroke-width="3"/>
+  <line x1="80" y1="95" x2="120" y2="95" stroke="#60A5FA" stroke-width="3"/>
+  <line x1="80" y1="115" x2="120" y2="115" stroke="#34D399" stroke-width="3"/>
+
+  <!-- App Name (light text for dark mode) -->
+  <text x="160" y="80"
+        font-family="Helvetica, Arial, sans-serif"
+        font-size="46"
+        font-weight="200"
+        fill="#E5E7EB">
+    MedLit
+  </text>
+
+  <text x="160" y="130"
+        font-family="Helvetica, Arial, sans-serif"
+        font-size="40"
+        font-weight="200"
+        fill="#A7F3D0">
+    Assist
+  </text>
+</svg>
