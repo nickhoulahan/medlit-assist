@@ -163,18 +163,3 @@ class PMCEndpoint:
         )
 
         return citation
-
-
-# -------------------------------------------------
-# EXAMPLE USAGE
-# -------------------------------------------------
-if __name__ == "__main__":
-    documents = PMCEndpoint.fetch_pmc_records(
-        "hyperspectral imaging blood oxygen", retmax=3
-    )
-
-    for doc in documents:
-        print("=" * 80)
-        print("PMC ID:", doc["pmcid"])
-        print("APA Citation:\n", doc["apa_citation"])
-        print("\nAbstract:\n", doc["abstract"])
