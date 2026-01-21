@@ -19,7 +19,7 @@ class PMCEndpoint:
     @classmethod
     def _fetch_pmc_ids(cls, query, retmax=5):
         """Search for PMC IDs matching the query."""
-        handle = cls.endpoint.esearch(db="pmc", term=query, retmax=retmax)
+        handle = cls.endpoint.esearch(db="pmc", term=query, retmax=retmax, sort="relevance")
         record = cls.endpoint.read(handle)
         handle.close()
         return record.get("IdList", [])
