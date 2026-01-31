@@ -122,3 +122,4 @@ class TestToolsExport:
         for tool in tools:
             assert hasattr(tool, "invoke")
             assert hasattr(tool, "name")
+            assert hasattr(tool, "description")
