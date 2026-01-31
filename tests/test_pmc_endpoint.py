@@ -259,6 +259,50 @@ class TestParseArticle:
         result = PMCEndpoint._parse_article(root, "888")
 
         assert "Adams, A., Baker, B., & Carter, C." in result["apa_citation"]
+        assert "(2023)" in result["apa_citation"]
+
+    def test_parse_article_ignores_year_in_author_surname(self):
+        xml = """<?xml version="1.0"?>
+        <article>
+            <front>
+                <journal-meta>
+                    <journal-title-group>
+                        <journal-title>Test Journal</journal-title>
+                    </journal-title-group>
+                </journal-meta>
+                <article-meta>
+                    <title-group>
+                        <article-title>Year In Author Surname</article-title>
+                    </title-group>
+                    <contrib-group>
+                        <contrib contrib-type="author">
+                            <name>
+                                <surname>2020</surname>
+                                <given-names>A.</given-names>
+                            </name>
+                        </contrib>
+                        <contrib contrib-type="author">
+                            <name>
+                                <surname>Doe</surname>
+                                <given-names>J.</given-names>
+                            </name>
+                        </contrib>
+                    </contrib-group>
+                    <pub-date pub-type="epub">
+                        <year>2020</year>
+                    </pub-date>
+                    <volume>1</volume>
+                    <abstract><p>Test abstract.</p></abstract>
+                </article-meta>
+            </front>
+        </article>"""
+
+        root = ET.fromstring(xml)
+        result = PMCEndpoint._parse_article(root, "777")
+
+        # Should not treat the year as an author surname.
+        assert "2020, " not in result["apa_citation"]
+        assert result["apa_citation"].startswith("Doe, J. (2020).")
 
     def test_parse_article_missing_optional_fields(self):
         xml = """<?xml version="1.0"?>
@@ -434,7 +478,7 @@ class TestFormatAPA:
             doi="10.1234/anon",
         )
 
-        assert citation.startswith(" (2024)")  # Empty author string
+        assert citation.startswith("(2024).")  # No author string
 
     def test_format_apa_no_issue(self):
         citation = PMCEndpoint._format_apa(
@@ -464,7 +508,7 @@ class TestFormatAPA:
         )
 
         assert "https://doi.org/" not in citation
-        assert citation.endswith("1–10. ")  # Ends with pages and space
+        assert citation.endswith("1–10.")
 
 
 class TestFetchPMCRecords:

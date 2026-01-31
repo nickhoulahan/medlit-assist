@@ -50,43 +50,79 @@ class PMCEndpoint:
             el = root.find(path)
             return el.text.strip() if el is not None and el.text else ""
 
-        title = find_text(".//article-title")
+        def has_letter(text: str) -> bool:
+            return bool(re.search(r"[A-Za-z]", text or ""))
 
-        # get author info from different tags
+        def clean_year(text: str) -> str:
+            text = (text or "").strip()
+            if re.fullmatch(r"(18|19|20)\d{2}", text):
+                return text
+            return ""
+
+        def first_alpha_initial(given_names: str) -> str:
+            # Prefer first alphabetic character as the initial.
+            m = re.search(r"[A-Za-z]", given_names or "")
+            return (m.group(0).upper() if m else "")
+
+        title = find_text(".//front//article-meta//title-group//article-title")
+
+        # Authors: handle person authors and group/collab authors.
         authors = []
-        for contrib in root.findall(".//contrib[@contrib-type='author']"):
-            surname = contrib.findtext(".//surname", "")
-            given = contrib.findtext(".//given-names", "")
-            if surname and given:
-                authors.append(f"{surname}, {given[0]}.")
+        for contrib in root.findall(".//front//article-meta//contrib[@contrib-type='author']"):
+            collab = (contrib.findtext(".//collab") or "").strip()
+            if collab:
+                authors.append(collab)
+                continue
+
+            surname = (contrib.findtext(".//surname") or "").strip()
+            given = (contrib.findtext(".//given-names") or "").strip()
+
+            # Filter malformed "authors" where the surname is actually a year or numeric.
+            if not surname or not has_letter(surname):
+                continue
+            if clean_year(surname):
+                continue
+
+            initial = first_alpha_initial(given)
+            if initial:
+                authors.append(f"{surname}, {initial}.")
+            else:
+                authors.append(surname)
 
         year = ""
-        for pd in root.findall(".//pub-date"):
-            if pd.attrib.get("pub-type") in ("epub", "ppub"):
-                y = pd.findtext("year")
+        for pd in root.findall(".//front//article-meta//pub-date"):
+            if pd.attrib.get("pub-type") in ("epub", "ppub", "epublish"):
+                y = clean_year(pd.findtext("year", ""))
+                if y:
+                    year = y
+                    break
+        if not year:
+            # Fallback: first valid year anywhere in article-meta
+            for pd in root.findall(".//front//article-meta//pub-date"):
+                y = clean_year(pd.findtext("year", ""))
                 if y:
                     year = y
                     break
 
-        journal = find_text(".//journal-title")
+        journal = find_text(".//front//journal-meta//journal-title")
         journal = re.sub(r"\s*\|\s*", " ", journal)
 
-        volume = find_text(".//volume")
-        issue = find_text(".//issue")
+        volume = find_text(".//front//article-meta//volume")
+        issue = find_text(".//front//article-meta//issue")
 
-        fpage = find_text(".//fpage")
-        lpage = find_text(".//lpage")
+        fpage = find_text(".//front//article-meta//fpage")
+        lpage = find_text(".//front//article-meta//lpage")
         pages = f"{fpage}\u2013{lpage}" if fpage and lpage else ""
 
         doi = ""
-        for aid in root.findall(".//article-id"):
+        for aid in root.findall(".//front//article-meta//article-id"):
             if aid.attrib.get("pub-id-type") == "doi" and aid.text:
                 doi = aid.text.replace("https://doi.org/", "").strip()
                 break
 
         # abstract needs to be cleaned and resassembled
         raw_abstract = ""
-        abstract_node = root.find(".//abstract")
+        abstract_node = root.find(".//front//article-meta//abstract")
 
         if abstract_node is not None:
             # Extract text from each paragraph element to preserve structure
@@ -157,9 +193,12 @@ class PMCEndpoint:
         vol_issue = f"{volume}({issue})" if issue else volume
         doi_url = f"https://doi.org/{doi}" if doi else ""
 
-        citation = (
-            f"{author_str} ({year}). {title}. "
-            f"{journal}, {vol_issue}, {pages}. {doi_url}"
-        )
+        year_part = f"({year})." if year else ""
+        if author_str:
+            lead = f"{author_str} {year_part}"
+        else:
+            lead = year_part
+
+        citation = f"{lead} {title}. {journal}, {vol_issue}, {pages}. {doi_url}".strip()
 
         return citation
