@@ -6,7 +6,9 @@ from typing import Iterable, Mapping, Tuple
 def build_tool_descriptions(tools: Mapping[str, object]) -> str:
     if not tools:
         return ""
-    lines = [f"- {name}: {getattr(tool, 'description', '')}" for name, tool in tools.items()]
+    lines = [
+        f"- {name}: {getattr(tool, 'description', '')}" for name, tool in tools.items()
+    ]
     return "\n\nAvailable tools:\n" + "\n".join(lines)
 
 

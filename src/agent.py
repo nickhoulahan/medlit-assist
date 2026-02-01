@@ -12,11 +12,10 @@ from src.langgraph_helpers import (
     build_tool_descriptions,
 )
 
+
 class OllamaAgent:
 
-    def __init__(
-        self, model: str, tools: List = None, temperature: float = 0.3
-    ):
+    def __init__(self, model: str, tools: List = None, temperature: float = 0.3):
         """
         Ollama agent with tools.
 
@@ -45,14 +44,14 @@ class OllamaAgent:
         else:
             self.llm_with_tools = self.llm
 
-    # removed: helper logic now lives in src/langgraph_helpers.py
-
     def _extract_tool_args(self, tool_args: Dict[str, Any]) -> Dict[str, Any]:
         query = tool_args.get("query", "")
         max_results = tool_args.get("max_results", 3)
         return {"query": query, "max_results": max_results}
 
-    def _run_tool(self, tool_name: str, tool_args: Dict[str, Any]) -> List[Dict[str, str]]:
+    def _run_tool(
+        self, tool_name: str, tool_args: Dict[str, Any]
+    ) -> List[Dict[str, str]]:
         """Execute a single tool call and normalize storage for follow-up Q&A."""
         tool = self.tools[tool_name]
         result = tool.invoke(tool_args)
@@ -62,9 +61,13 @@ class OllamaAgent:
         self.documents = result
         return result
 
-    async def _stream_synthesis(self, *, user_input: str, documents: List[Dict[str, str]]) -> AsyncIterator[str]:
+    async def _stream_synthesis(
+        self, *, user_input: str, documents: List[Dict[str, str]]
+    ) -> AsyncIterator[str]:
         documents_context = build_documents_context(documents)
-        system_content, human_content = build_synthesis_prompts(user_input, documents_context)
+        system_content, human_content = build_synthesis_prompts(
+            user_input, documents_context
+        )
         synthesis_messages = [
             SystemMessage(content=system_content),
             HumanMessage(content=human_content),
@@ -75,7 +78,6 @@ class OllamaAgent:
                 yield chunk.content
             else:
                 yield str(chunk)
-
 
     async def astream(self, user_input: str, chat_history: Optional[List] = None):
         """
@@ -150,7 +152,9 @@ class OllamaAgent:
             if self.documents:
                 # Create context from documents
                 documents_context = build_documents_context(self.documents)
-                system_content, human_content = build_qa_prompts(user_input, documents_context)
+                system_content, human_content = build_qa_prompts(
+                    user_input, documents_context
+                )
 
                 qa_messages = [SystemMessage(content=system_content)]
 
