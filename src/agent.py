@@ -5,6 +5,12 @@ from typing import Any, AsyncIterator, Dict, List, Optional
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_ollama import ChatOllama
 
+from src.langgraph_helpers import (
+    build_documents_context,
+    build_qa_prompts,
+    build_synthesis_prompts,
+    build_tool_descriptions,
+)
 
 class OllamaAgent:
 
@@ -39,21 +45,7 @@ class OllamaAgent:
         else:
             self.llm_with_tools = self.llm
 
-    def _tool_descriptions(self) -> str:
-        if not self.tools:
-            return ""
-        return "\n\nAvailable tools:\n" + "\n".join(
-            [f"- {name}: {tool.description}" for name, tool in self.tools.items()]
-        )
-
-    @staticmethod
-    def _format_documents_context(documents: List[Dict[str, str]]) -> str:
-        return "\n\n".join(
-            [
-                f"Article {i+1} (PMC ID: {doc['pmcid']}):\n{doc['citation']}\n\nAbstract: {doc['abstract']}"
-                for i, doc in enumerate(documents)
-            ]
-        )
+    # removed: helper logic now lives in src/langgraph_helpers.py
 
     def _extract_tool_args(self, tool_args: Dict[str, Any]) -> Dict[str, Any]:
         query = tool_args.get("query", "")
@@ -71,35 +63,11 @@ class OllamaAgent:
         return result
 
     async def _stream_synthesis(self, *, user_input: str, documents: List[Dict[str, str]]) -> AsyncIterator[str]:
-        context = self._format_documents_context(documents)
+        documents_context = build_documents_context(documents)
+        system_content, human_content = build_synthesis_prompts(user_input, documents_context)
         synthesis_messages = [
-            SystemMessage(
-                content="""You are a biomedical research communicator. Your job is to:
-
-1. Read scientific research articles
-2. Explain the key findings in simple, accessible language that anyone can understand with a low lexile score
-3. Always cite which article (by number and PMC ID) you're referencing
-4. Use analogies and plain language - avoid jargon
-5. Be accurate but approachable
-6. Structure your response with clear sections
-
-Format your response like:
-**What the research found:**
-
-**Why it matters:**
-
-**The science behind it:**
-
-Always cite sources with a link to the article like: (Title, https://pmc.ncbi.nlm.nih.gov/articles/PMC12345678)"""
-            ),
-            HumanMessage(
-                content=f"""Based on these research articles, please explain what we know about: {user_input}
-
-Research Articles:
-{context}
-
-Remember: Explain in simple, everyday language while staying accurate. Cite the articles with pubmed central links."""
-            ),
+            SystemMessage(content=system_content),
+            HumanMessage(content=human_content),
         ]
 
         async for chunk in self.llm.astream(synthesis_messages):
@@ -121,7 +89,7 @@ Remember: Explain in simple, everyday language while staying accurate. Cite the 
             Chunks of the response for streaming output
         """
         # Compile tool description for the system prompt
-        tool_descriptions = self._tool_descriptions()
+        tool_descriptions = build_tool_descriptions(self.tools)
 
         # Create messages starting with system message
         messages = [
@@ -181,34 +149,17 @@ Remember: Explain in simple, everyday language while staying accurate. Cite the 
             # No tool calls, check if we have documents for already
             if self.documents:
                 # Create context from documents
-                context = self._format_documents_context(self.documents)
+                documents_context = build_documents_context(self.documents)
+                system_content, human_content = build_qa_prompts(user_input, documents_context)
 
-                # Create Q&A prompt with simple language requirement
-                qa_messages = [
-                    SystemMessage(
-                        content=f"""You are a biomedical research communicator. Answer questions based on the 
-                        research articles provided. 
-
-                        Research Articles:
-                        {context}
-
-                        Guidelines:
-                        - Explain in simple, everyday language (like explaining to a friend)
-                        - Always cite which article(s) you're referencing (e.g., "Article 1, PMC12345678")
-                        - Avoid medical jargon, or explain it if necessary
-                        - Be accurate but accessible with a low lexile score
-                        - If the articles don't answer the question, say so clearly
-
-                        Your goal is to make medical research understandable to everyone."""
-                    )
-                ]
+                qa_messages = [SystemMessage(content=system_content)]
 
                 # Add chat history for context
                 if chat_history:
                     qa_messages.extend(chat_history)
 
                 # Add current question
-                qa_messages.append(HumanMessage(content=user_input))
+                qa_messages.append(HumanMessage(content=human_content))
 
                 # Stream the Q&A response
                 async for chunk in self.llm.astream(qa_messages):
