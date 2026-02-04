@@ -5,12 +5,8 @@ from typing import Any, AsyncIterator, Dict, List, Optional
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_ollama import ChatOllama
 
-from src.langgraph_helpers import (
-    build_documents_context,
-    build_qa_prompts,
-    build_synthesis_prompts,
-    build_tool_descriptions,
-)
+from src.langgraph_helpers import build_tool_descriptions
+from src.langgraph_workflow import build_qa_messages, build_synthesis_messages
 
 
 class OllamaAgent:
@@ -64,14 +60,7 @@ class OllamaAgent:
     async def _stream_synthesis(
         self, *, user_input: str, documents: List[Dict[str, str]]
     ) -> AsyncIterator[str]:
-        documents_context = build_documents_context(documents)
-        system_content, human_content = build_synthesis_prompts(
-            user_input, documents_context
-        )
-        synthesis_messages = [
-            SystemMessage(content=system_content),
-            HumanMessage(content=human_content),
-        ]
+        synthesis_messages = build_synthesis_messages(user_input, documents)
 
         async for chunk in self.llm.astream(synthesis_messages):
             if hasattr(chunk, "content"):
@@ -151,19 +140,15 @@ class OllamaAgent:
             # No tool calls, check if we have documents for already
             if self.documents:
                 # Create context from documents
-                documents_context = build_documents_context(self.documents)
-                system_content, human_content = build_qa_prompts(
-                    user_input, documents_context
-                )
-
-                qa_messages = [SystemMessage(content=system_content)]
+                qa_messages = build_qa_messages(user_input, self.documents)
 
                 # Add chat history for context
                 if chat_history:
-                    qa_messages.extend(chat_history)
-
-                # Add current question
-                qa_messages.append(HumanMessage(content=human_content))
+                    qa_messages = [
+                        qa_messages[0],
+                        *chat_history,
+                        qa_messages[1],
+                    ]
 
                 # Stream the Q&A response
                 async for chunk in self.llm.astream(qa_messages):
