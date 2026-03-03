@@ -1,7 +1,7 @@
 import pytest
 from unittest.mock import AsyncMock, MagicMock, patch
 from langchain_core.messages import HumanMessage, AIMessage
-from src.agent import OllamaAgent
+from src.medlit_agent.agent.agent import OllamaAgent
 
 
 @pytest.fixture

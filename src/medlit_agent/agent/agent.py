@@ -5,8 +5,8 @@ from typing import Any, AsyncIterator, Dict, List, Optional
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_ollama import ChatOllama
 
-from src.langgraph_helpers import build_tool_descriptions
-from src.langgraph_workflow import build_qa_messages, build_synthesis_messages
+from src.medlit_agent.graph.langgraph_helpers import build_tool_descriptions
+from src.medlit_agent.graph.langgraph_workflow import build_qa_messages, build_synthesis_messages
 
 
 class OllamaAgent:

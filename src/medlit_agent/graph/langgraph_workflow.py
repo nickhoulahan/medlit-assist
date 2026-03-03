@@ -7,7 +7,7 @@ from langgraph.graph import StateGraph
 from langgraph.graph.message import add_messages
 from typing_extensions import NotRequired
 
-from src.langgraph_helpers import (
+from src.medlit_agent.graph.langgraph_helpers import (
     build_documents_context,
     build_qa_prompts,
     build_synthesis_prompts,
