@@ -1,6 +1,6 @@
 from langchain_core.messages import HumanMessage, SystemMessage
 
-from src.langgraph_workflow import build_qa_messages, build_synthesis_messages
+from src.medlit_agent.graph.langgraph_workflow import build_qa_messages, build_synthesis_messages
 
 
 def _sample_documents():

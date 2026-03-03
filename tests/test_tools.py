@@ -2,12 +2,12 @@ from unittest.mock import patch
 
 import pytest
 
-from src.tools import search_pubmed_central, tools
+from src.medlit_agent.tools.tools import search_pubmed_central, tools
 
 
 class TestSearchPubmedCentral:
 
-    @patch("src.tools.PMCEndpoint.fetch_pmc_records")
+    @patch("src.medlit_agent.tools.tools.PMCEndpoint.fetch_pmc_records")
     def test_search_pubmed_central_success(self, mock_fetch):
         # Mock the PMC endpoint response
         mock_fetch.return_value = [
@@ -32,7 +32,7 @@ class TestSearchPubmedCentral:
         assert result[1]["pmcid"] == "67890"
         mock_fetch.assert_called_once_with("test query", retmax=2)
 
-    @patch("src.tools.PMCEndpoint.fetch_pmc_records")
+    @patch("src.medlit_agent.tools.tools.PMCEndpoint.fetch_pmc_records")
     def test_search_pubmed_central_default_max_results(self, mock_fetch):
         mock_fetch.return_value = []
 
@@ -40,7 +40,7 @@ class TestSearchPubmedCentral:
 
         mock_fetch.assert_called_once_with("test", retmax=3)
 
-    @patch("src.tools.PMCEndpoint.fetch_pmc_records")
+    @patch("src.medlit_agent.tools.tools.PMCEndpoint.fetch_pmc_records")
     def test_search_pubmed_central_empty_results(self, mock_fetch):
         mock_fetch.return_value = []
 
@@ -49,7 +49,7 @@ class TestSearchPubmedCentral:
         assert result == []
         assert isinstance(result, list)
 
-    @patch("src.tools.PMCEndpoint.fetch_pmc_records")
+    @patch("src.medlit_agent.tools.tools.PMCEndpoint.fetch_pmc_records")
     def test_search_pubmed_central_custom_max_results(self, mock_fetch):
         mock_fetch.return_value = [
             {
@@ -65,14 +65,14 @@ class TestSearchPubmedCentral:
         assert len(result) == 5
         mock_fetch.assert_called_once_with("test", retmax=5)
 
-    @patch("src.tools.PMCEndpoint.fetch_pmc_records")
+    @patch("src.medlit_agent.tools.tools.PMCEndpoint.fetch_pmc_records")
     def test_search_pubmed_central_error_handling(self, mock_fetch):
         mock_fetch.side_effect = Exception("Network error")
 
         with pytest.raises(Exception, match="Error searching PubMed Central: Network error"):
             search_pubmed_central.invoke({"query": "test"})
 
-    @patch("src.tools.PMCEndpoint.fetch_pmc_records")
+    @patch("src.medlit_agent.tools.tools.PMCEndpoint.fetch_pmc_records")
     def test_search_pubmed_central_malformed_response(self, mock_fetch):
         mock_fetch.return_value = [
             {
@@ -94,7 +94,7 @@ class TestSearchPubmedCentral:
         assert "PubMed Central" in search_pubmed_central.description
         assert hasattr(search_pubmed_central, "invoke")
 
-    @patch("src.tools.PMCEndpoint.fetch_pmc_records")
+    @patch("src.medlit_agent.tools.tools.PMCEndpoint.fetch_pmc_records")
     def test_search_pubmed_central_result_structure(self, mock_fetch):
         mock_fetch.return_value = [
             {

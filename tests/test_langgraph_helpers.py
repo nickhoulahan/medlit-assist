@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from types import SimpleNamespace
 
-from src.langgraph_helpers import (
+from src.medlit_agent.graph.langgraph_helpers import (
     build_documents_context,
     build_qa_prompts,
     build_synthesis_prompts,

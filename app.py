@@ -1,8 +1,8 @@
 import chainlit as cl
 from langchain_core.messages import AIMessage, HumanMessage
 
-from src.agent import OllamaAgent
-from src.tools import tools
+from src.medlit_agent.agent.agent import OllamaAgent
+from src.medlit_agent.tools.tools import tools
 
 
 @cl.on_chat_start

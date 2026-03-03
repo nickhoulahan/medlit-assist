@@ -1,7 +1,7 @@
 import pytest
 from unittest.mock import AsyncMock, MagicMock, patch
 from langchain_core.messages import HumanMessage, AIMessage
-from src.agent import OllamaAgent
+from src.medlit_agent.agent.agent import OllamaAgent
 
 
 @pytest.fixture
@@ -16,7 +16,7 @@ def mock_llm():
 
 class TestOllamaAgent:
 
-    @patch('src.agent.ChatOllama')
+    @patch('src.medlit_agent.agent.agent.ChatOllama')
     def test_agent_initialization_without_tools(self, mock_ollama):
 
         mock_ollama.return_value = MagicMock()
@@ -29,7 +29,7 @@ class TestOllamaAgent:
         assert agent.documents == []
         assert agent.llm is not None
 
-    @patch('src.agent.ChatOllama')
+    @patch('src.medlit_agent.agent.agent.ChatOllama')
     def test_agent_initialization_with_tools(self, mock_ollama):
 
         mock_ollama.return_value = MagicMock()
@@ -44,7 +44,7 @@ class TestOllamaAgent:
         assert "test_tool" in agent.tools
         assert agent.tools["test_tool"] == mock_tool
 
-    @patch('src.agent.ChatOllama')
+    @patch('src.medlit_agent.agent.agent.ChatOllama')
     def test_agent_custom_temperature(self, mock_ollama):
 
         mock_instance = MagicMock()
@@ -55,7 +55,7 @@ class TestOllamaAgent:
         mock_ollama.assert_called_with(model="gpt-oss:20b", temperature=0.7)
 
     @pytest.mark.asyncio
-    @patch('src.agent.ChatOllama')
+    @patch('src.medlit_agent.agent.agent.ChatOllama')
     async def test_astream_without_tool_calls(self, mock_ollama):
 
         mock_llm = MagicMock()
@@ -79,7 +79,7 @@ class TestOllamaAgent:
         assert "Test response" in "".join(chunks)
 
     @pytest.mark.asyncio
-    @patch('src.agent.ChatOllama')
+    @patch('src.medlit_agent.agent.agent.ChatOllama')
     async def test_astream_with_chat_history(self, mock_ollama):
 
         mock_llm = MagicMock()
@@ -111,7 +111,7 @@ class TestOllamaAgent:
         assert any(isinstance(msg, HumanMessage) and msg.content == "Previous question" for msg in call_args)
 
     @pytest.mark.asyncio
-    @patch('src.agent.ChatOllama')
+    @patch('src.medlit_agent.agent.agent.ChatOllama')
     async def test_astream_with_tool_calls(self, mock_ollama):
 
         mock_llm = MagicMock()
@@ -167,7 +167,7 @@ class TestOllamaAgent:
         assert "Searching PubMed Central" in full_output
 
     @pytest.mark.asyncio
-    @patch('src.agent.ChatOllama')
+    @patch('src.medlit_agent.agent.agent.ChatOllama')
     async def test_astream_with_stored_documents_qa(self, mock_ollama):
 
         mock_llm = MagicMock()
@@ -208,7 +208,7 @@ class TestOllamaAgent:
         assert "Answer based on articles" in full_output
 
     @pytest.mark.asyncio
-    @patch('src.agent.ChatOllama')
+    @patch('src.medlit_agent.agent.agent.ChatOllama')
     async def test_ainvoke_method(self, mock_ollama):
 
         mock_llm = MagicMock()
@@ -228,7 +228,7 @@ class TestOllamaAgent:
         assert isinstance(result, str)
         assert "Complete response" in result
 
-    @patch('src.agent.ChatOllama')
+    @patch('src.medlit_agent.agent.agent.ChatOllama')
     def test_tool_binding_failure_fallback(self, mock_ollama):
 
         mock_llm = MagicMock()
@@ -243,7 +243,7 @@ class TestOllamaAgent:
         # Should still initialize without error
         assert agent.llm_with_tools is not None
 
-    @patch('src.agent.ChatOllama')
+    @patch('src.medlit_agent.agent.agent.ChatOllama')
     def test_documents_storage(self, mock_ollama):
 
         mock_ollama.return_value = MagicMock()

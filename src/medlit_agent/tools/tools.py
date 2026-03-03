@@ -3,7 +3,7 @@ from typing import Dict, List
 from langchain_core.tools import tool
 from langsmith import traceable
 
-from src.pmc_endpoint import PMCEndpoint
+from src.medlit_agent.tools.pmc_endpoint import PMCEndpoint
 
 
 @tool
