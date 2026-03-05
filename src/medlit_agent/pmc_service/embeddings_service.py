@@ -14,7 +14,7 @@ class SBertEmbeddingsService:
         Generate embeddings for a list of texts
         """
         return cls.model.encode(texts).tolist()
-    
+
     @classmethod
     def get_embedding(cls, text: str) -> list[float]:
         """

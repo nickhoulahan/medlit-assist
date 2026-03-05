@@ -31,7 +31,10 @@ class TestSearchPubmedCentral:
 
         assert len(result) == 2
         assert result[0]["pmcid"] == "12345"
-        assert result[0]["citation"] == "Smith, J. (2024). Test Article. Journal, 10(1), 1-10. https://doi.org/10.1234/test"
+        assert (
+            result[0]["citation"]
+            == "Smith, J. (2024). Test Article. Journal, 10(1), 1-10. https://doi.org/10.1234/test"
+        )
         assert result[0]["abstract"] == "This is a test abstract."
         assert result[1]["pmcid"] == "67890"
         mock_fetch.assert_called_once_with("test query", retmax=2)
@@ -73,7 +76,9 @@ class TestSearchPubmedCentral:
     def test_search_pubmed_central_error_handling(self, mock_fetch):
         mock_fetch.side_effect = Exception("Network error")
 
-        with pytest.raises(Exception, match="Error searching PubMed Central: Network error"):
+        with pytest.raises(
+            Exception, match="Error searching PubMed Central: Network error"
+        ):
             search_pubmed_central.invoke({"query": "test"})
 
     @patch("src.medlit_agent.tools.tools.PMCEndpoint.fetch_pmc_records")

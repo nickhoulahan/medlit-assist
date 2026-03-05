@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import List, Dict
+from typing import Dict, List
 
 from src.medlit_agent.pmc_service.embeddings_service import SBertEmbeddingsService
 
@@ -17,14 +17,20 @@ class ChromaDB:
         from chromadb import PersistentClient
 
         default_cache_dir = Path(__file__).resolve().parent / "chromadb"
-        db_path = Path(persist_directory) if persist_directory is not None else default_cache_dir
+        db_path = (
+            Path(persist_directory)
+            if persist_directory is not None
+            else default_cache_dir
+        )
         db_path.mkdir(parents=True, exist_ok=True)
 
         self.client = PersistentClient(path=str(db_path))
         self.collection = self.client.get_or_create_collection(name=collection_name)
 
     @staticmethod
-    def _split_text(text: str, chunk_size: int = 1000, chunk_overlap: int = 200) -> List[str]:
+    def _split_text(
+        text: str, chunk_size: int = 1000, chunk_overlap: int = 200
+    ) -> List[str]:
         if not text:
             return []
 
@@ -45,13 +51,21 @@ class ChromaDB:
             chunks = self._split_text(body, chunk_size=1000, chunk_overlap=200)
             for chunk in chunks:
                 documents.append(chunk)
-                metadatas.append({"title": text["title"], "text": chunk, "pmcid": pmcid})
+                metadatas.append(
+                    {"title": text["title"], "text": chunk, "pmcid": pmcid}
+                )
 
         embeddings_service = SBertEmbeddingsService()
         embeddings = embeddings_service.get_embeddings([doc for doc in documents])
-        self.collection.add(ids=[f"{pmcid}_{i}" for i in range(len(documents))], embeddings=embeddings, metadatas=metadatas)
+        self.collection.add(
+            ids=[f"{pmcid}_{i}" for i in range(len(documents))],
+            embeddings=embeddings,
+            metadatas=metadatas,
+        )
 
-    def query(self, query_embedding: List[float], n_results: int) -> List[Dict[str, str]]:
+    def query(
+        self, query_embedding: List[float], n_results: int
+    ) -> List[Dict[str, str]]:
         results = self.collection.query(
             query_embeddings=[query_embedding],
             n_results=n_results,
@@ -61,7 +75,7 @@ class ChromaDB:
         if not metadatas:
             return []
         return metadatas[0]
-    
+
     def _document_exists(self, pmcid: str) -> bool:
         # Check if any document with the given PMCID exists in the collection
         results = self.collection.query(

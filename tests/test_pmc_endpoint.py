@@ -14,7 +14,9 @@ def mock_env_vars(monkeypatch):
     monkeypatch.setenv("PMC_API_KEY", "test_api_key")
     # Re-import to apply env vars
     import importlib
+
     from src.medlit_agent.pmc_service import pmc_endpoint
+
     importlib.reload(pmc_endpoint)
 
 
@@ -155,7 +157,6 @@ class TestFetchPMCIds:
 
 class TestParseArticle:
 
-
     def test_parse_article_complete(self, sample_article_xml):
         root = ET.fromstring(sample_article_xml)
         result = PMCEndpoint._parse_article(root, "12345678")
@@ -164,9 +165,10 @@ class TestParseArticle:
         assert "Smith, J." in result["apa_citation"]
         assert "Johnson, B." in result["apa_citation"]
         assert "(2024)" in result["apa_citation"]
-        assert "Hyperspectral Imaging for Blood Oxygen Monitoring" in result[
-            "apa_citation"
-        ]
+        assert (
+            "Hyperspectral Imaging for Blood Oxygen Monitoring"
+            in result["apa_citation"]
+        )
         assert "Journal of Medical Imaging" in result["apa_citation"]
         assert "15(3)" in result["apa_citation"]
         assert "100–115" in result["apa_citation"]  # En-dash
@@ -513,10 +515,10 @@ class TestFormatAPA:
 
 class TestFetchPMCRecords:
 
-    @patch.object(PMCEndpoint, '_parse_article')
+    @patch.object(PMCEndpoint, "_parse_article")
     @patch("src.medlit_agent.pmc_service.pmc_endpoint.ET.fromstring")
     @patch("src.medlit_agent.pmc_service.pmc_endpoint.Entrez.efetch")
-    @patch.object(PMCEndpoint, '_fetch_pmc_ids')
+    @patch.object(PMCEndpoint, "_fetch_pmc_ids")
     def test_fetch_pmc_records_success(
         self, mock_fetch_ids, mock_efetch, mock_fromstring, mock_parse, mock_env_vars
     ):
@@ -558,7 +560,7 @@ class TestFetchPMCRecords:
         mock_fetch_ids.assert_called_once_with("test query", 2)
         assert mock_efetch.call_count == 2
 
-    @patch.object(PMCEndpoint, '_fetch_pmc_ids')
+    @patch.object(PMCEndpoint, "_fetch_pmc_ids")
     def test_fetch_pmc_records_no_results(self, mock_fetch_ids, mock_env_vars):
         mock_fetch_ids.return_value = []
 
@@ -566,10 +568,10 @@ class TestFetchPMCRecords:
 
         assert records == []
 
-    @patch.object(PMCEndpoint, '_parse_article')
+    @patch.object(PMCEndpoint, "_parse_article")
     @patch("src.medlit_agent.pmc_service.pmc_endpoint.ET.fromstring")
     @patch("src.medlit_agent.pmc_service.pmc_endpoint.Entrez.efetch")
-    @patch.object(PMCEndpoint, '_fetch_pmc_ids')
+    @patch.object(PMCEndpoint, "_fetch_pmc_ids")
     def test_fetch_pmc_records_parse_error_raises(
         self, mock_fetch_ids, mock_efetch, mock_fromstring, mock_parse, mock_env_vars
     ):

@@ -1,15 +1,15 @@
-from src.medlit_agent.pmc_service.xml_to_dict import XMLToDictConverter
-from src.medlit_agent.pmc_service.chroma_db import ChromaDB
-from src.medlit_agent.pmc_service.pmc_endpoint import PMCEndpoint
-from src.medlit_agent.pmc_service.embeddings_service import SBertEmbeddingsService
-
 from typing import Dict, List
+
+from src.medlit_agent.pmc_service.chroma_db import ChromaDB
+from src.medlit_agent.pmc_service.embeddings_service import SBertEmbeddingsService
+from src.medlit_agent.pmc_service.pmc_endpoint import PMCEndpoint
+from src.medlit_agent.pmc_service.xml_to_dict import XMLToDictConverter
 
 
 class FullTextRetriever:
     """
-     Get body from /pmc-articleset/article/body or //article/body fallback
-     and convert section titles + paragraphs dict of chunks
+    Get body from /pmc-articleset/article/body or //article/body fallback
+    and convert section titles + paragraphs dict of chunks
     """
 
     def __init__(self):
@@ -24,7 +24,7 @@ class FullTextRetriever:
         xml_content = PMCEndpoint.fetch_pmcid_xml(pmid)
         sections = self.converter.convert(xml_content)
         return sections
-    
+
     def store_full_text(self, pmid: str, sections: List[Dict[str, str]]):
         """
         Store full text sections in the database
@@ -38,7 +38,8 @@ class FullTextRetriever:
         query_embedding = SBertEmbeddingsService.get_embedding(query)
         results = self.db.query(query_embedding, n_results)
         return results
-    
+
+
 if __name__ == "__main__":
     retriever = FullTextRetriever()
     pmid = "PMC6659366"
