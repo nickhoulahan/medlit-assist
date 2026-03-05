@@ -40,10 +40,19 @@ class OllamaAgent:
         else:
             self.llm_with_tools = self.llm
 
-    def _extract_tool_args(self, tool_args: Dict[str, Any]) -> Dict[str, Any]:
-        query = tool_args.get("query", "")
-        max_results = tool_args.get("max_results", 3)
-        return {"query": query, "max_results": max_results}
+    def _extract_tool_args(
+        self, tool_name: str, tool_args: Dict[str, Any]
+    ) -> Dict[str, Any]:
+        if tool_name == "search_pubmed_central":
+            query = tool_args.get("query", "")
+            max_results = tool_args.get("max_results", 3)
+            return {"query": query, "max_results": max_results}
+
+        if tool_name == "retrieve_full_text":
+            pmcid = tool_args.get("pmcid", "")
+            return {"pmcid": pmcid}
+
+        return tool_args
 
     def _run_tool(
         self, tool_name: str, tool_args: Dict[str, Any]
@@ -91,6 +100,7 @@ class OllamaAgent:
                 {tool_descriptions}
 
                 When users ask about topics or want to find articles, you should use the search_pubmed_central tool.
+                When users want to understand the details of a specific article, you should use the retrieve_full_text tool.
 
                 Be conversational, helpful, and informative. Users may not be familiar with scientific terminology, so explain things in simple terms with a low lexile score."""
             )
@@ -114,16 +124,23 @@ class OllamaAgent:
                 tool_args = tool_call.get("args", {})
 
                 if tool_name in self.tools:
-                    normalized_args = self._extract_tool_args(tool_args)
-                    query = normalized_args.get("query", "")
+                    normalized_args = self._extract_tool_args(tool_name, tool_args)
 
-                    yield f"🔎 Searching PubMed Central for research on **{query}**...\n\n"
+                    if tool_name == "search_pubmed_central":
+                        query = normalized_args.get("query", "")
+                        yield f"🔎 Searching PubMed Central for research on **{query}**...\n\n"
+                    elif tool_name == "retrieve_full_text":
+                        pmcid = normalized_args.get("pmcid", "")
+                        yield f"📄 Retrieving full text for **{pmcid}**...\n\n"
 
                     try:
                         tool_result = self._run_tool(tool_name, normalized_args)
 
                         if tool_result:
-                            yield f"📚 Found {len(tool_result)} articles. Let me filter and explain what the research shows...\n\n"
+                            if tool_name == "search_pubmed_central":
+                                yield f"📚 Found {len(tool_result)} articles. Let me filter and explain what the research shows...\n\n"
+                            elif tool_name == "retrieve_full_text":
+                                yield f"📚 Retrieved {len(tool_result)} full-text sections. Let me explain what they show...\n\n"
 
                             async for chunk in self._stream_synthesis(
                                 user_input=user_input, documents=tool_result

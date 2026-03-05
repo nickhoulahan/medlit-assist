@@ -202,3 +202,14 @@ class PMCEndpoint:
         citation = f"{lead} {title}. {journal}, {vol_issue}, {pages}. {doi_url}".strip()
 
         return citation
+
+    @classmethod
+    def fetch_pmcid_xml(cls, pmcid: str) -> str:
+        handle = cls.endpoint.efetch(
+                db="pmc", id=pmcid, rettype="full", retmode="xml"
+            )
+        xml_data = handle.read()
+        handle.close()
+        if isinstance(xml_data, bytes):
+            return xml_data.decode("utf-8", errors="replace")
+        return xml_data

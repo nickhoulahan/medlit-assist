@@ -3,7 +3,8 @@ from typing import Dict, List
 from langchain_core.tools import tool
 from langsmith import traceable
 
-from src.medlit_agent.tools.pmc_endpoint import PMCEndpoint
+from src.medlit_agent.pmc_service.pmc_endpoint import PMCEndpoint
+from src.medlit_agent.pmc_service.full_text_retriever import FullTextRetriever
 
 
 @tool
@@ -35,6 +36,16 @@ def search_pubmed_central(query: str, max_results: int = 3) -> List[Dict[str, st
     except Exception as e:
         raise Exception(f"Error searching PubMed Central: {str(e)}")
 
+@tool
+def retrieve_full_text(pmcid: str) -> List[Dict[str, str]]:
+    """Retrieve full text sections for a given PMC ID.
+    Args:
+        pmcid: The PMC ID of the article (e.g., "PMC1013555")
+        Returns: List of full text sections with title and body
+    """
+    retriever = FullTextRetriever()
+    sections = retriever.retrieve_full_text(pmcid)
+    return sections
 
 # Export tools list for easy import
-tools = [search_pubmed_central]
+tools = [search_pubmed_central, retrieve_full_text]
