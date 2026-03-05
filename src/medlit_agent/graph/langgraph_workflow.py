@@ -85,5 +85,7 @@ def build_synthesis_messages(
     return _run_graph(_SYNTHESIS_GRAPH, user_input, documents)
 
 
-def build_qa_messages(user_input: str, documents: List[DocumentPayload]) -> List[AnyMessage]:
+def build_qa_messages(
+    user_input: str, documents: List[DocumentPayload]
+) -> List[AnyMessage]:
     return _run_graph(_QA_GRAPH, user_input, documents)

@@ -1,9 +1,9 @@
 from __future__ import annotations
 
 import json
-from pathlib import Path
 import re
-from typing import List, Dict
+from pathlib import Path
+from typing import Dict, List
 
 from lxml import etree as ET
 
@@ -14,7 +14,16 @@ class XMLToDictConverter:
     Get body from /pmc-articleset/article/body or //article/body fallback
     and convert section titles + paragraphs dict of chunks
     """
-    skip_sections = {"references", "acknowledgments", "funding", "conflict of interest", "supplementary material", "author contributions", "supplementary information"}
+
+    skip_sections = {
+        "references",
+        "acknowledgments",
+        "funding",
+        "conflict of interest",
+        "supplementary material",
+        "author contributions",
+        "supplementary information",
+    }
 
     @staticmethod
     def _parse_xml(xml_content: str | bytes) -> ET._Element:
@@ -60,11 +69,7 @@ class XMLToDictConverter:
                 continue
 
             title_elem = next(
-                (
-                    child
-                    for child in sec
-                    if ET.QName(child).localname == "title"
-                ),
+                (child for child in sec if ET.QName(child).localname == "title"),
                 None,
             )
             if title_elem is None:
@@ -74,7 +79,10 @@ class XMLToDictConverter:
             if not title_text:
                 continue
             normalized_title_text = cls._normalize_section_title(title_text)
-            if any(skip_title in normalized_title_text for skip_title in normalized_skip_titles):
+            if any(
+                skip_title in normalized_title_text
+                for skip_title in normalized_skip_titles
+            ):
                 continue
 
             paragraphs: List[str] = []
@@ -112,10 +120,11 @@ class XMLToDictConverter:
         root = cls._parse_xml(xml_content)
         body = cls._find_body(root)
         if body is None:
-            raise ValueError("No <body> element found in XML; cannot extract full text.")
+            raise ValueError(
+                "No <body> element found in XML; cannot extract full text."
+            )
 
         return list(cls._iter_body_blocks(body))
-    
 
 
 def _find_project_root(start: Path) -> Path:

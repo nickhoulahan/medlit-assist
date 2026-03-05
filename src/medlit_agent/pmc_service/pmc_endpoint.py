@@ -19,7 +19,9 @@ class PMCEndpoint:
     @classmethod
     def _fetch_pmc_ids(cls, query, retmax=5):
         """Search for PMC IDs matching the query."""
-        handle = cls.endpoint.esearch(db="pmc", term=query, retmax=retmax, sort="relevance")
+        handle = cls.endpoint.esearch(
+            db="pmc", term=query, retmax=retmax, sort="relevance"
+        )
         record = cls.endpoint.read(handle)
         handle.close()
         return record.get("IdList", [])
@@ -45,6 +47,7 @@ class PMCEndpoint:
     @staticmethod
     def _parse_article(root, pmcid):
         """XML needs to be parsed to extract needed fields for an APA citation."""
+
         def find_text(path):
             """Helper method to find text content."""
             el = root.find(path)
@@ -62,13 +65,15 @@ class PMCEndpoint:
         def first_alpha_initial(given_names: str) -> str:
             # Prefer first alphabetic character as the initial.
             m = re.search(r"[A-Za-z]", given_names or "")
-            return (m.group(0).upper() if m else "")
+            return m.group(0).upper() if m else ""
 
         title = find_text(".//front//article-meta//title-group//article-title")
 
         # Authors: handle person authors and group/collab authors.
         authors = []
-        for contrib in root.findall(".//front//article-meta//contrib[@contrib-type='author']"):
+        for contrib in root.findall(
+            ".//front//article-meta//contrib[@contrib-type='author']"
+        ):
             collab = (contrib.findtext(".//collab") or "").strip()
             if collab:
                 authors.append(collab)
@@ -151,7 +156,6 @@ class PMCEndpoint:
 
         return {"pmcid": pmcid, "apa_citation": apa_citation, "abstract": abstract}
 
-
     @staticmethod
     def _clean_abstract(raw_abstract: str) -> str:
         text = raw_abstract
@@ -205,9 +209,7 @@ class PMCEndpoint:
 
     @classmethod
     def fetch_pmcid_xml(cls, pmcid: str) -> str:
-        handle = cls.endpoint.efetch(
-                db="pmc", id=pmcid, rettype="full", retmode="xml"
-            )
+        handle = cls.endpoint.efetch(db="pmc", id=pmcid, rettype="full", retmode="xml")
         xml_data = handle.read()
         handle.close()
         if isinstance(xml_data, bytes):
