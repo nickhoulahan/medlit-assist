@@ -15,12 +15,22 @@ def build_tool_descriptions(tools: Mapping[str, object]) -> str:
 def build_documents_context(documents: Iterable[Mapping[str, str]]) -> str:
     formatted = []
     for i, doc in enumerate(documents):
+        if "abstract" in doc or "citation" in doc:
+            pmcid = str(doc.get("pmcid", ""))
+            citation = str(doc.get("citation", ""))
+            abstract = str(doc.get("abstract", ""))
+            formatted.append(
+                f"Article {i+1} (PMC ID: {pmcid}):\n{citation}\n\nAbstract: {abstract}"
+            )
+            continue
+
+        title = str(doc.get("title", ""))
+        body = str(doc.get("body", ""))
         pmcid = str(doc.get("pmcid", ""))
-        citation = str(doc.get("citation", ""))
-        abstract = str(doc.get("abstract", ""))
-        formatted.append(
-            f"Article {i+1} (PMC ID: {pmcid}):\n{citation}\n\nAbstract: {abstract}"
-        )
+        if pmcid:
+            formatted.append(f"Section {i+1} (PMC ID: {pmcid}) - {title}:\n{body}")
+        else:
+            formatted.append(f"Section {i+1} - {title}:\n{body}")
     return "\n\n".join(formatted)
 
 

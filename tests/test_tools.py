@@ -2,7 +2,11 @@ from unittest.mock import patch
 
 import pytest
 
-from src.medlit_agent.tools.tools import search_pubmed_central, tools
+from src.medlit_agent.tools.tools import (
+    retrieve_full_text,
+    search_pubmed_central,
+    tools,
+)
 
 
 class TestSearchPubmedCentral:
@@ -115,8 +119,11 @@ class TestToolsExport:
     def test_tools_list_contains_search_pubmed_central(self):
         assert search_pubmed_central in tools
 
+    def test_tools_list_contains_retrieve_full_text(self):
+        assert retrieve_full_text in tools
+
     def test_tools_list_length(self):
-        assert len(tools) == 1
+        assert len(tools) == 2
 
     def test_all_tools_are_callable(self):
         for tool in tools:

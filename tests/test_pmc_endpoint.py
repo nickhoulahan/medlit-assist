@@ -4,7 +4,7 @@ from xml.etree import ElementTree as ET
 
 import pytest
 
-from src.medlit_agent.tools.pmc_endpoint import PMCEndpoint
+from src.medlit_agent.pmc_service.pmc_endpoint import PMCEndpoint
 
 
 @pytest.fixture
@@ -14,7 +14,7 @@ def mock_env_vars(monkeypatch):
     monkeypatch.setenv("PMC_API_KEY", "test_api_key")
     # Re-import to apply env vars
     import importlib
-    from src.medlit_agent.tools import pmc_endpoint
+    from src.medlit_agent.pmc_service import pmc_endpoint
     importlib.reload(pmc_endpoint)
 
 
@@ -92,7 +92,7 @@ class TestPMCEndpointInit:
         # Re-import to trigger class-level initialization
         import importlib
 
-        from src.medlit_agent.tools import pmc_endpoint
+        from src.medlit_agent.pmc_service import pmc_endpoint
 
         importlib.reload(pmc_endpoint)
         # When EMAIL env var is missing, it should be None or empty
@@ -102,8 +102,8 @@ class TestPMCEndpointInit:
 
 class TestFetchPMCIds:
 
-    @patch("src.medlit_agent.tools.pmc_endpoint.Entrez.esearch")
-    @patch("src.medlit_agent.tools.pmc_endpoint.Entrez.read")
+    @patch("src.medlit_agent.pmc_service.pmc_endpoint.Entrez.esearch")
+    @patch("src.medlit_agent.pmc_service.pmc_endpoint.Entrez.read")
     def test_fetch_pmc_ids_success(
         self, mock_read, mock_esearch, mock_env_vars, sample_esearch_response
     ):
@@ -118,8 +118,8 @@ class TestFetchPMCIds:
         mock_esearch.assert_called_once()
         mock_read.assert_called_once()
 
-    @patch("src.medlit_agent.tools.pmc_endpoint.Entrez.esearch")
-    @patch("src.medlit_agent.tools.pmc_endpoint.Entrez.read")
+    @patch("src.medlit_agent.pmc_service.pmc_endpoint.Entrez.esearch")
+    @patch("src.medlit_agent.pmc_service.pmc_endpoint.Entrez.read")
     def test_fetch_pmc_ids_empty_result(self, mock_read, mock_esearch, mock_env_vars):
 
         mock_esearch.return_value = MagicMock()
@@ -130,7 +130,7 @@ class TestFetchPMCIds:
         assert ids == []
         mock_esearch.assert_called_once()
 
-    @patch("src.medlit_agent.tools.pmc_endpoint.Entrez.esearch")
+    @patch("src.medlit_agent.pmc_service.pmc_endpoint.Entrez.esearch")
     def test_fetch_pmc_ids_network_error(self, mock_esearch, mock_env_vars):
 
         mock_esearch.side_effect = Exception("Network error")
@@ -138,8 +138,8 @@ class TestFetchPMCIds:
         with pytest.raises(Exception, match="Network error"):
             PMCEndpoint._fetch_pmc_ids("test query")
 
-    @patch("src.medlit_agent.tools.pmc_endpoint.Entrez.esearch")
-    @patch("src.medlit_agent.tools.pmc_endpoint.Entrez.read")
+    @patch("src.medlit_agent.pmc_service.pmc_endpoint.Entrez.esearch")
+    @patch("src.medlit_agent.pmc_service.pmc_endpoint.Entrez.read")
     def test_fetch_pmc_ids_custom_retmax(self, mock_read, mock_esearch, mock_env_vars):
 
         mock_esearch.return_value = MagicMock()
@@ -514,8 +514,8 @@ class TestFormatAPA:
 class TestFetchPMCRecords:
 
     @patch.object(PMCEndpoint, '_parse_article')
-    @patch("src.medlit_agent.tools.pmc_endpoint.ET.fromstring")
-    @patch("src.medlit_agent.tools.pmc_endpoint.Entrez.efetch")
+    @patch("src.medlit_agent.pmc_service.pmc_endpoint.ET.fromstring")
+    @patch("src.medlit_agent.pmc_service.pmc_endpoint.Entrez.efetch")
     @patch.object(PMCEndpoint, '_fetch_pmc_ids')
     def test_fetch_pmc_records_success(
         self, mock_fetch_ids, mock_efetch, mock_fromstring, mock_parse, mock_env_vars
@@ -567,8 +567,8 @@ class TestFetchPMCRecords:
         assert records == []
 
     @patch.object(PMCEndpoint, '_parse_article')
-    @patch("src.medlit_agent.tools.pmc_endpoint.ET.fromstring")
-    @patch("src.medlit_agent.tools.pmc_endpoint.Entrez.efetch")
+    @patch("src.medlit_agent.pmc_service.pmc_endpoint.ET.fromstring")
+    @patch("src.medlit_agent.pmc_service.pmc_endpoint.Entrez.efetch")
     @patch.object(PMCEndpoint, '_fetch_pmc_ids')
     def test_fetch_pmc_records_parse_error_raises(
         self, mock_fetch_ids, mock_efetch, mock_fromstring, mock_parse, mock_env_vars
