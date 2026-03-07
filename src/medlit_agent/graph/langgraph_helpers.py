@@ -4,6 +4,7 @@ from typing import Iterable, Mapping, Tuple
 
 
 def build_tool_descriptions(tools: Mapping[str, object]) -> str:
+    """Builds a description of available tools for the agent."""
     if not tools:
         return ""
     lines = [
