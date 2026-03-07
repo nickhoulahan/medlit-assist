@@ -146,15 +146,16 @@ class TestOllamaAgent:
             }
         ]
 
-        mock_llm.ainvoke = AsyncMock(return_value=mock_response)
+        mock_synthesis = MagicMock()
+        mock_synthesis.content = (
+            '{"what_the_research_found": "Synthesis content", '
+            '"why_it_matters": "Matters", '
+            '"the_science_behind_it": "Science", '
+            '"sources": ["(Title, https://pmc.ncbi.nlm.nih.gov/articles/PMC123456)"]}'
+        )
+        mock_synthesis.tool_calls = []
 
-        # Mock the synthesis stream
-        async def mock_astream_gen(*args, **kwargs):
-            mock_chunk = MagicMock()
-            mock_chunk.content = "Synthesis content"
-            yield mock_chunk
-
-        mock_llm.astream = mock_astream_gen
+        mock_llm.ainvoke = AsyncMock(side_effect=[mock_response, mock_synthesis])
 
         chunks = []
         async for chunk in agent.astream("search for diabetes"):
@@ -170,6 +171,7 @@ class TestOllamaAgent:
         # Verify output contains expected elements
         full_output = "".join(chunks)
         assert "Searching PubMed Central" in full_output
+        assert "What the research found" in full_output
 
     @pytest.mark.asyncio
     @patch("src.medlit_agent.agent.agent.ChatOllama")
@@ -195,15 +197,14 @@ class TestOllamaAgent:
         mock_response.content = ""
         mock_response.tool_calls = []
 
-        mock_llm.ainvoke = AsyncMock(return_value=mock_response)
+        mock_qa = MagicMock()
+        mock_qa.content = (
+            '{"answer": "Answer based on articles", '
+            '"citations": ["Article 1 (PMC123456)"]}'
+        )
+        mock_qa.tool_calls = []
 
-        # Mock the Q&A stream
-        async def mock_astream_gen(*args, **kwargs):
-            mock_chunk = MagicMock()
-            mock_chunk.content = "Answer based on articles"
-            yield mock_chunk
-
-        mock_llm.astream = mock_astream_gen
+        mock_llm.ainvoke = AsyncMock(side_effect=[mock_response, mock_qa])
 
         chunks = []
         async for chunk in agent.astream("What did the research find?"):
@@ -211,6 +212,7 @@ class TestOllamaAgent:
 
         full_output = "".join(chunks)
         assert "Answer based on articles" in full_output
+        assert "Citations" in full_output
 
     @pytest.mark.asyncio
     @patch("src.medlit_agent.agent.agent.ChatOllama")

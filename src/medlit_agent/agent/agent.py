@@ -10,6 +10,10 @@ from src.medlit_agent.graph.langgraph_workflow import (
     build_qa_messages,
     build_synthesis_messages,
 )
+from src.medlit_agent.schemas.schemas import (
+    ArticleQAAnswer,
+    ResearchSynthesis,
+)
 
 
 class OllamaAgent:
@@ -73,12 +77,54 @@ class OllamaAgent:
         self, *, user_input: str, documents: List[Dict[str, str]]
     ) -> AsyncIterator[str]:
         synthesis_messages = build_synthesis_messages(user_input, documents)
+        try:
+            structured_response = await self.llm.ainvoke(synthesis_messages)
+            content = (
+                structured_response.content
+                if hasattr(structured_response, "content")
+                else str(structured_response)
+            )
+            parsed = ResearchSynthesis.from_llm(content)
+            yield parsed.to_markdown()
+            return
+        except Exception:
+            # Fall back to plain streaming if structured parsing fails.
+            async for chunk in self.llm.astream(synthesis_messages):
+                if hasattr(chunk, "content"):
+                    yield chunk.content
+                else:
+                    yield str(chunk)
 
-        async for chunk in self.llm.astream(synthesis_messages):
-            if hasattr(chunk, "content"):
-                yield chunk.content
-            else:
-                yield str(chunk)
+    async def _stream_qa(
+        self, *, user_input: str, documents: List[Dict[str, str]], chat_history: Optional[List]
+    ) -> AsyncIterator[str]:
+        qa_messages = build_qa_messages(user_input, documents)
+
+        # Add chat history for context
+        if chat_history:
+            qa_messages = [
+                qa_messages[0],
+                *chat_history,
+                qa_messages[1],
+            ]
+
+        try:
+            structured_response = await self.llm.ainvoke(qa_messages)
+            content = (
+                structured_response.content
+                if hasattr(structured_response, "content")
+                else str(structured_response)
+            )
+            parsed = ArticleQAAnswer.from_llm(content)
+            yield parsed.to_markdown()
+            return
+        except Exception:
+            # Fall back to plain streaming if structured parsing fails.
+            async for chunk in self.llm.astream(qa_messages):
+                if hasattr(chunk, "content"):
+                    yield chunk.content
+                else:
+                    yield str(chunk)
 
     async def astream(self, user_input: str, chat_history: Optional[List] = None):
         """
@@ -159,23 +205,12 @@ class OllamaAgent:
         else:
             # No tool calls, check if we have documents for already
             if self.documents:
-                # Create context from documents
-                qa_messages = build_qa_messages(user_input, self.documents)
-
-                # Add chat history for context
-                if chat_history:
-                    qa_messages = [
-                        qa_messages[0],
-                        *chat_history,
-                        qa_messages[1],
-                    ]
-
-                # Stream the Q&A response
-                async for chunk in self.llm.astream(qa_messages):
-                    if hasattr(chunk, "content"):
-                        yield chunk.content
-                    else:
-                        yield str(chunk)
+                async for chunk in self._stream_qa(
+                    user_input=user_input,
+                    documents=self.documents,
+                    chat_history=chat_history,
+                ):
+                    yield chunk
             else:
                 # Just stream the regular response
                 if hasattr(response, "content"):
