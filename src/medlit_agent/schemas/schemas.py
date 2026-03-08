@@ -1,8 +1,9 @@
 from __future__ import annotations
 
+import re
 from typing import List, Self
 
-from pydantic import BaseModel, Field
+from pydantic import AliasChoices, BaseModel, Field
 
 
 class ArticleDocument(BaseModel):
@@ -12,9 +13,39 @@ class ArticleDocument(BaseModel):
 
 
 class LLMOutputModel(BaseModel):
+    @staticmethod
+    def _extract_json_payload(payload: str) -> str | None:
+        """
+            Extract JSON object from the input string, handling cases where the JSON may be fenced or embedded within other text.
+            This private method guards against an I was noticing where the JSON may be wrapped in additional text or formatting.
+        """
+        text = payload.strip()
+        if not text:
+            return None
+
+        fenced_match = re.search(
+            r"```(?:json)?\s*(\{.*?\})\s*```",
+            text,
+            flags=re.DOTALL | re.IGNORECASE,
+        )
+        if fenced_match:
+            return fenced_match.group(1).strip()
+
+        object_match = re.search(r"\{.*\}", text, flags=re.DOTALL)
+        if object_match:
+            return object_match.group(0).strip()
+
+        return None
+
     @classmethod
     def from_llm(cls, payload: str) -> Self:
-        return cls.model_validate_json(payload)
+        try:
+            return cls.model_validate_json(payload)
+        except Exception:
+            extracted = cls._extract_json_payload(payload)
+            if not extracted or extracted == payload.strip():
+                raise
+            return cls.model_validate_json(extracted)
 
 
 class ResearchSynthesis(LLMOutputModel):
@@ -23,7 +54,9 @@ class ResearchSynthesis(LLMOutputModel):
     )
     why_it_matters: str = Field(..., description="Practical implications")
     the_science_behind_it: str = Field(
-        ..., description="Technical details explained accessibly"
+        ...,
+        validation_alias=AliasChoices("the_science_behind_it", "the_science_below_it"),
+        description="Technical details explained accessibly",
     )
     sources: List[str] = Field(
         default_factory=list,

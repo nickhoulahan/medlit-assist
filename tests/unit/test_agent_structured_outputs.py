@@ -94,3 +94,4 @@ async def test_structured_qa_output_is_rendered(mock_ollama):
     assert "It may reduce risk." in output
     assert "Citations" in output
     assert "PMC123456" in output
+
