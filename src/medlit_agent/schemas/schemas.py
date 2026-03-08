@@ -15,6 +15,10 @@ class ArticleDocument(BaseModel):
 class LLMOutputModel(BaseModel):
     @staticmethod
     def _extract_json_payload(payload: str) -> str | None:
+        """
+            Extract JSON object from the input string, handling cases where the JSON may be fenced or embedded within other text.
+            This private method guards against an I was noticing where the JSON may be wrapped in additional text or formatting.
+        """
         text = payload.strip()
         if not text:
             return None
