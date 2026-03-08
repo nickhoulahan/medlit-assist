@@ -1,0 +1,39 @@
+{
+  "generated_at": "2026-03-08T15:13:41.819292+00:00",
+  "model": "gpt-oss:20b",
+  "question": "Can diet help with type 2 diabetes?",
+  "pmc_query": "Can diet help with type 2 diabetes?",
+  "pmc_results": 3,
+  "results": [
+    {
+      "prompt_label": "baseline",
+      "status": "ok",
+      "flesch_reading_ease": 12.076192650079918,
+      "flesch_kincaid_grade": 18.01495548961425,
+      "word_count": 337,
+      "sentence_count": 13,
+      "prompt": "Can diet help with type 2 diabetes?",
+      "output": "**What the research found:**\n\n1. A randomized trial is being conducted to see if a low\u2011carbohydrate diet combined with exercise in low\u2011oxygen (hypoxia) conditions can improve blood sugar control, heart health and body composition in people with type\u202f2 diabetes (no results yet). 2. In a large study of Japanese adults using a diet\u2011management app, people with type\u202f2 diabetes chose menus that were lower in carbohydrates and calories more often than higher\u2011carb, higher\u2011calorie menus. 3. In patients with coronary heart disease, increasing the amount of plant\u2011based protein in the diet was associated with a 36\u202f% lower risk of developing type\u202f2 diabetes over five years.\n\n**Why it matters:**\n\nThese findings suggest that specific dietary patterns\u2014especially lower carbohydrate intake and higher plant protein\u2014can help control blood sugar and may reduce the chance of developing diabetes.  Knowing that people with diabetes naturally prefer lower\u2011carb options can help doctors and dietitians design easier\u2011to\u2011follow meal plans that patients are more likely to stick with, improving long\u2011term health.\n\n**The science behind it:**\n\nLow\u2011carbohydrate diets limit the amount of glucose that enters the bloodstream after meals, which can lower blood sugar spikes and improve insulin sensitivity.  Exercise in hypoxia (low oxygen) activates a protein called HIF\u20111\u03b1 that can increase the number of glucose transporters (GLUT\u20114) on muscle cells, making it easier for them to take up glucose.  Plant proteins are often high in fiber and low in saturated fat; fiber slows glucose absorption and reduces insulin demand, while lower saturated fat intake improves insulin sensitivity.  Together, these mechanisms explain why the dietary changes studied may benefit people with type\u202f2 diabetes.\n\n**Sources:**\n- (Combined low-carbohydrate diet and long-term exercise in hypoxia in type 2 diabetes: A randomized controlled trial protocol to assess glycemic control, cardiovascular risk factors and body composition, https://pmc.ncbi.nlm.nih.gov/articles/PMC10924702)\n- (Individuals with Type 2 Diabetes Mellitus Tend to Select Low-Carbohydrate, Low-Calorie Food Menus at Home on Diet Application, https://pmc.ncbi.nlm.nih.gov/articles/PMC9610133)\n- (Quality and Quantity of Protein Intake Influence Incidence of Type 2 Diabetes Mellitus in Coronary Heart Disease Patients: From the CORDIOPREV Study, https://pmc.ncbi.nlm.nih.gov/articles/PMC8067822)"
+    },
+    {
+      "prompt_label": "plain_language",
+      "status": "ok",
+      "flesch_reading_ease": 26.03738095238097,
+      "flesch_kincaid_grade": 15.424285714285713,
+      "word_count": 280,
+      "sentence_count": 12,
+      "prompt": "Can diet help with type 2 diabetes? Explain this in simple, everyday language for non-experts. Avoid technical terms and jargon.",
+      "output": "**What the research found:**\n\nStudies show that eating fewer carbohydrates can help lower blood sugar levels in people with type\u202f2 diabetes.  People with diabetes also tend to pick meals that are lower in carbs and calories when they use online diet tools.  In a group of heart\u2011disease patients, those who increased the amount of plant\u2011based protein in their diet were less likely to develop type\u202f2 diabetes over five years.\n\n**Why it matters:**\n\nManaging blood sugar is key to preventing the serious health problems that come with diabetes, such as heart disease and nerve damage.  Knowing that simple changes\u2014like cutting back on carbs, choosing lower\u2011calorie meals, and adding more plant protein\u2014can improve or even lower the risk of diabetes gives patients and doctors practical tools to keep people healthier and reduce the need for medication or hospital care.\n\n**The science behind it:**\n\nCarbohydrates are the main food that raises blood sugar.  A low\u2011carb diet limits these spikes, giving the body less glucose to process.  Exercise, especially in low\u2011oxygen (hypoxia) conditions, can boost the body\u2019s ability to use glucose and improve heart health.  Plant proteins are rich in fiber and contain fewer saturated fats, which helps keep blood sugar steady and reduces harmful fats that can worsen insulin resistance.\n\n**Sources:**\n- (Combined low-carbohydrate diet and long-term exercise in hypoxia in type 2 diabetes: A randomized controlled trial protocol to assess glycemic control, cardiovascular risk factors and body composition, https://pmc.ncbi.nlm.nih.gov/articles/PMC10924702)\n- (Individuals with Type 2 Diabetes Mellitus Tend to Select Low-Carbohydrate, Low-Calorie Food Menus at Home on Diet Application, https://pmc.ncbi.nlm.nih.gov/articles/PMC9610133)\n- (Quality and Quantity of Protein Intake Influence Incidence of Type 2 Diabetes Mellitus in Coronary Heart Disease Patients: From the CORDIOPREV Study, https://pmc.ncbi.nlm.nih.gov/articles/PMC8067822)"
+    },
+    {
+      "prompt_label": "very_simple",
+      "status": "ok",
+      "flesch_reading_ease": 24.743842975206604,
+      "flesch_kincaid_grade": 15.273471074380165,
+      "word_count": 242,
+      "sentence_count": 11,
+      "prompt": "Can diet help with type 2 diabetes? Use short sentences, common words, and avoid medical jargon. A middle school reading level is ideal. Explain any necessary technical terms in simple language.",
+      "output": "**What the research found:**\n\nPeople with type 2 diabetes often choose meals that have less carbohydrate and fewer calories. A study that is still being done will test if a low\u2011carbohydrate diet plus exercise at high altitude can lower blood sugar and improve heart health. Another study found that eating more plant protein may lower the chance of getting type 2 diabetes in people who already have heart disease.\n\n**Why it matters:**\n\nIf diets that are low in carbs or high in plant protein help control blood sugar, doctors and patients can use this information to choose foods that keep diabetes under control. Better blood sugar control can reduce heart problems and make people feel better.\n\n**The science behind it:**\n\nLow\u2011carbohydrate diets give the body less sugar to process, so blood sugar stays lower. Exercise in low\u2011oxygen (hypoxia) conditions can make the body use sugar more efficiently. Plant proteins come with fiber and less saturated fat, which can improve how the body handles sugar and lower the risk of developing diabetes.\n\n**Sources:**\n- (Combined low-carbohydrate diet and long-term exercise in hypoxia in type 2 diabetes: A randomized controlled trial protocol to assess glycemic control, cardiovascular risk factors and body composition, https://pmc.ncbi.nlm.nih.gov/articles/PMC10924702)\n- (Individuals with Type 2 Diabetes Mellitus Tend to Select Low-Carbohydrate, Low-Calorie Food Menus at Home on Diet Application, https://pmc.ncbi.nlm.nih.gov/articles/PMC9610133)\n- (Quality and Quantity of Protein Intake Influence Incidence of Type 2 Diabetes Mellitus in Coronary Heart Disease Patients: From the CORDIOPREV Study, https://pmc.ncbi.nlm.nih.gov/articles/PMC8067822)"
+    }
+  ]
+}

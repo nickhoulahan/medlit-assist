@@ -1,0 +1,89 @@
+LLM Readability Review Report
+
+Generated: 2026-03-08T15:13:41.819292+00:00
+Model: gpt-oss:20b
+PMC Query: Does smoking prevent Parkinson's disease?
+PMC Results: 3
+
+================================================================================
+
+Prompt 1: baseline
+Status: ok
+Scores: FRE=25.19, FKG=15.30, Words=380, Sentences=17
+
+Prompt:
+Does smoking prevent Parkinson's disease?
+
+Output:
+**What the research found:**
+
+Observational studies have consistently shown that people who smoke cigarettes have a lower risk of developing Parkinson’s disease (PD) compared with non‑smokers. However, the evidence is mainly from population studies and does not prove that smoking actually protects against PD. Randomized trials that tested nicotine, the most studied component of tobacco, did not improve motor symptoms in people with early PD, and no trials have shown that smoking or nicotine can prevent the disease from starting. Other chemicals in smoke, such as low‑level carbon monoxide or monoamine‑oxidase inhibitors, have been suggested as possible protective agents, but their effects have not been confirmed in clinical studies.
+
+**Why it matters:**
+
+If smoking were truly protective, it would change how we think about PD risk and could point to new preventive treatments. But because smoking causes many serious health problems, even a small protective effect would not justify continuing to smoke. Understanding whether any component of tobacco can prevent PD is important for developing safe, targeted therapies that could reduce the burden of this neurodegenerative disease.
+
+**The science behind it:**
+
+The inverse association between smoking and PD is one of the strongest links seen in environmental epidemiology, but the mechanism is unclear. Nicotine can activate nicotinic acetylcholine receptors in the brain, which may influence dopamine neurons that degenerate in PD. Yet nicotine trials in people with early PD failed to show benefit, suggesting that nicotine alone is not enough. Other smoke constituents—such as monoamine oxidase inhibitors that reduce dopamine breakdown, changes in the gut microbiome, or mild antioxidant effects from low‑level carbon monoxide—have been proposed as alternative explanations. Because these substances are present only in tobacco smoke, it is difficult to separate their effects from the overall harmful impact of smoking. Moreover, reverse causation (people who are genetically protected from PD may be more likely to smoke) and shared genetic factors could explain the observed association. Therefore, the current evidence does not support smoking as a preventive strategy for PD, and further research is needed to identify any protective molecules that could be used safely.
+
+**Sources:**
+- (What Is the Real Impact of Smoking on Diseases Alleged to Benefit from It?, https://pmc.ncbi.nlm.nih.gov/articles/PMC12707872)
+- (Clearing the Smoke: What Protects Smokers from Parkinson’s Disease?, https://pmc.ncbi.nlm.nih.gov/articles/PMC10923097)
+- (Designing the First Trials for Parkinson’s Prevention, https://pmc.ncbi.nlm.nih.gov/articles/PMC11491995)
+
+--------------------------------------------------------------------------------
+
+Prompt 2: plain_language
+Status: ok
+Scores: FRE=36.19, FKG=13.37, Words=332, Sentences=16
+
+Prompt:
+Does smoking prevent Parkinson's disease? Explain this in simple, everyday language for non-experts. Avoid technical terms and jargon.
+
+Output:
+**What the research found:**
+
+Observational studies have shown that people who smoke cigarettes seem to have a lower chance of developing Parkinson’s disease compared with non‑smokers.  However, the evidence that smoking actually protects against the disease is weak.  Trials that gave people nicotine, the main active ingredient in tobacco, did not improve Parkinson’s symptoms or prevent the disease.  The review also points out that other chemicals in smoke, such as low levels of carbon monoxide or changes in gut bacteria, might play a role, but this has not been proven.  Overall, smoking is not a safe or reliable way to prevent Parkinson’s.
+
+**Why it matters:**
+
+If smoking or a component of it could truly protect against Parkinson’s, it could lead to new medicines that help people stay healthy.  Knowing that smoking is not a safe preventive measure also reminds us that the many harmful effects of tobacco far outweigh any small possible benefit for Parkinson’s.  This information helps doctors and patients make better choices about smoking and encourages researchers to look for safer ways to mimic any protective effects.
+
+**The science behind it:**
+
+The link between smoking and lower Parkinson’s risk comes from large population studies that compare smokers and non‑smokers.  These studies can be influenced by other factors, such as people who are genetically less likely to develop Parkinson’s also being more likely to smoke.  Randomized trials that gave people nicotine for a year did not slow the disease, suggesting nicotine alone is not the protective factor.  Scientists are exploring other possibilities, like the mild exposure to carbon monoxide in smoke that might boost the body’s antioxidant defenses, or changes in gut bacteria caused by smoking.  None of these ideas has yet been proven in controlled experiments, so the exact reason for the observed association remains unclear.
+
+**Sources:**
+- What Is the Real Impact of Smoking on Diseases Alleged to Benefit from It?, https://pmc.ncbi.nlm.nih.gov/articles/PMC12707872
+- Clearing the Smoke: What Protects Smokers from Parkinson’s Disease?, https://pmc.ncbi.nlm.nih.gov/articles/PMC10923097
+- Designing the First Trials for Parkinson’s Prevention, https://pmc.ncbi.nlm.nih.gov/articles/PMC11491995
+
+--------------------------------------------------------------------------------
+
+Prompt 3: very_simple
+Status: ok
+Scores: FRE=51.23, FKG=10.09, Words=224, Sentences=14
+
+Prompt:
+Does smoking prevent Parkinson's disease? Use short sentences, common words, and avoid medical jargon. A middle school reading level is ideal. Explain any necessary technical terms in simple language.
+
+Output:
+**What the research found:**
+
+Studies that look at many people find that people who smoke seem to have a lower chance of getting Parkinson’s disease. But the studies are not perfect and cannot prove that smoking actually stops the disease. Trials that gave people nicotine did not help people with Parkinson’s. So we do not know if smoking protects against Parkinson’s.
+
+**Why it matters:**
+
+If smoking could stop Parkinson’s, it would give clues to new medicines. But smoking also causes many other serious illnesses. Knowing whether it helps or not is important for doctors and patients.
+
+**The science behind it:**
+
+The idea comes from the fact that some chemicals in cigarette smoke, especially nicotine, might protect brain cells. Scientists have tried giving nicotine to people with Parkinson’s, but it did not improve their symptoms. Other chemicals, like small amounts of carbon monoxide or changes in gut bacteria, might also help, but we have no strong proof yet. The link could also be because people who are more likely to smoke are different in ways that make Parkinson’s less likely, or because genes that make people smoke also protect the brain.
+
+**Sources:**
+- (What Is the Real Impact of Smoking on Diseases Alleged to Benefit from It?, https://pmc.ncbi.nlm.nih.gov/articles/PMC12707872)
+- (Clearing the Smoke: What Protects Smokers from Parkinson’s Disease?, https://pmc.ncbi.nlm.nih.gov/articles/PMC10923097)
+- (Designing the First Trials for Parkinson’s Prevention, https://pmc.ncbi.nlm.nih.gov/articles/PMC11491995)
+
+--------------------------------------------------------------------------------

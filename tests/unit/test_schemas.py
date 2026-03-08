@@ -24,14 +24,28 @@ def test_parse_research_synthesis_from_json_string():
 
 def test_parse_research_synthesis_from_fenced_json():
     payload = (
+        "```json\n"
         '{"what_the_research_found": "A", "why_it_matters": "B", '
         '"the_science_behind_it": "C", "sources": []}'
+        "\n```"
     )
 
     parsed = ResearchSynthesis.from_llm(payload)
 
     assert isinstance(parsed, ResearchSynthesis)
     assert parsed.sources == []
+
+
+def test_parse_research_synthesis_accepts_legacy_science_key():
+    payload = (
+        '{"what_the_research_found": "A", "why_it_matters": "B", '
+        '"the_science_below_it": "C", "sources": []}'
+    )
+
+    parsed = ResearchSynthesis.from_llm(payload)
+
+    assert isinstance(parsed, ResearchSynthesis)
+    assert parsed.the_science_behind_it == "C"
 
 
 def test_parse_article_qa_answer_from_dict():

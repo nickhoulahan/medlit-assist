@@ -1,0 +1,39 @@
+{
+  "generated_at": "2026-03-08T15:13:41.819292+00:00",
+  "model": "gpt-oss:20b",
+  "question": "What drug preventions are there for Alzheimer's disease?",
+  "pmc_query": "What drug preventions are there for Alzheimer's disease?",
+  "pmc_results": 3,
+  "results": [
+    {
+      "prompt_label": "baseline",
+      "status": "ok",
+      "flesch_reading_ease": 30.17409090909092,
+      "flesch_kincaid_grade": 14.51606060606061,
+      "word_count": 330,
+      "sentence_count": 15,
+      "prompt": "What drug preventions are there for Alzheimer's disease?",
+      "output": "**What the research found:**\n\nSo far, no drug has been proven to stop or slow the onset of Alzheimer\u2019s disease.  Early\u2011stage prevention trials that have been done have not shown clear benefits, and the studies that did not work were often limited by how participants were recruited.  Researchers are still testing medicines that target the disease\u2019s main hallmarks\u2014amyloid plaques, tau tangles, inflammation and other brain changes\u2014but none of these drugs has yet passed the proof\u2011of\u2011concept stage for prevention.  In addition, studies of people with very early Alzheimer\u2019s have looked at ways to prevent sudden confusion (delirium) and to keep the brain\u2019s \u2018cognitive reserve\u2019 higher, which may help slow decline, but these are not drug treatments yet.\n\n**Why it matters:**\n\nAlzheimer\u2019s disease is expected to affect millions of older adults, and preventing it would reduce the personal, social and economic burden on families and health systems.  Even a modestly effective preventive medicine could lower the number of people who develop dementia and improve quality of life for many.  Knowing what works and what does not helps researchers design better trials and focus on the most promising targets.\n\n**The science behind it:**\n\nPrevention trials aim to intervene before symptoms appear, using biomarkers (blood, imaging, or cerebrospinal fluid tests) to identify people at high risk.  Most candidate drugs target amyloid\u2011beta buildup, tau protein tangles, or brain inflammation\u2014processes thought to drive the disease.  Because the brain changes that lead to dementia begin many years before symptoms, trials must enroll large numbers of people who are still cognitively normal, which is why recruitment methods are critical.  Researchers also explore lifestyle and cognitive training interventions that may build cognitive reserve, potentially delaying the onset of symptoms.  The hope is that a combination of drugs and non\u2011drug strategies, guided by early detection, will eventually provide a disease\u2011modifying preventive treatment.\n\n**Sources:**\n- Recruitment methods for united states Alzheimer disease prevention trials, https://pmc.ncbi.nlm.nih.gov/articles/PMC12878103\n- Delirium in Early-Stage Alzheimer\u2019s Disease, https://pmc.ncbi.nlm.nih.gov/articles/PMC2814421\n- Novel strategies for the prevention of dementia from Alzheimer's disease, https://pmc.ncbi.nlm.nih.gov/articles/PMC3181917"
+    },
+    {
+      "prompt_label": "plain_language",
+      "status": "ok",
+      "flesch_reading_ease": 43.65122302158275,
+      "flesch_kincaid_grade": 12.103926002055498,
+      "word_count": 278,
+      "sentence_count": 14,
+      "prompt": "What drug preventions are there for Alzheimer's disease? Explain this in simple, everyday language for non-experts. Avoid technical terms and jargon.",
+      "output": "**What the research found:**\n\nThe studies show that, as of now, no drug has been proven to stop or slow Alzheimer\u2019s disease before it starts.  Early trials of medicines did not show clear benefits, and researchers are still looking for ways to find and test new drugs.  Some research points to possible future medicines that could work together to protect the brain, but these ideas are still in the experimental stage.\n\n**Why it matters:**\n\nAlzheimer\u2019s disease is a growing problem as people live longer.  If we could give people a medicine that prevents the disease, many families and health systems could avoid the huge costs and suffering that come with dementia.  Knowing what is and isn\u2019t working helps scientists focus on the most promising approaches and keeps patients and families informed about realistic expectations.\n\n**The science behind it:**\n\nScientists are trying two main things.  First, they are looking for ways to spot the disease early\u2014before symptoms appear\u2014so that any future medicine can be given at the right time.  Second, they are testing new drugs that target different parts of the brain\u2019s chemistry, hoping that a combination of medicines might slow or stop the disease.  However, the first set of drug trials that were done did not show clear benefits, and researchers say better ways to recruit and study participants are needed to find a real preventive medicine.  The hope is that, with more research and better early detection, a safe and effective preventive drug could be developed in the future.\n\n**Sources:**\n- (Recruitment methods for united states Alzheimer disease prevention trials, https://pmc.ncbi.nlm.nih.gov/articles/PMC12878103)\n- (Delirium in Early-Stage Alzheimer\u2019s Disease, https://pmc.ncbi.nlm.nih.gov/articles/PMC2814421)\n- (Novel strategies for the prevention of dementia from Alzheimer's disease, https://pmc.ncbi.nlm.nih.gov/articles/PMC3181917)"
+    },
+    {
+      "prompt_label": "very_simple",
+      "status": "ok",
+      "flesch_reading_ease": 41.56617313915862,
+      "flesch_kincaid_grade": 11.726359223300971,
+      "word_count": 206,
+      "sentence_count": 12,
+      "prompt": "What drug preventions are there for Alzheimer's disease? Use short sentences, common words, and avoid medical jargon. A middle school reading level is ideal. Explain any necessary technical terms in simple language.",
+      "output": "**What the research found:**\n\nNo drug has yet been proven to prevent Alzheimer\u2019s disease.  Early trials of medicines did not show benefit, and researchers are still looking for new drugs and better ways to test them.  Some studies suggest that keeping the brain active and preventing short\u2011term confusion (delirium) in people with early symptoms might slow decline, but this is not a drug treatment yet.\n\n**Why it matters:**\n\nIf a medicine could stop or slow Alzheimer\u2019s before people notice memory problems, many people could stay healthy longer.  Even small improvements could lower the number of people who develop the disease and reduce the burden on families and health care systems.\n\n**The science behind it:**\n\nAlzheimer\u2019s starts many years before symptoms appear.  Scientists look for early signs in the brain or blood and test medicines that might stop harmful protein build\u2011up or protect brain cells.  Trials need enough participants and good recruitment methods to see if a drug works.  Current studies have not yet found a safe, effective preventive drug, but research continues and new strategies are being explored.\n\n**Sources:**\n- (Recruitment methods for united states Alzheimer disease prevention trials, https://pmc.ncbi.nlm.nih.gov/articles/PMC12878103)\n- (Delirium in Early-Stage Alzheimer\u2019s Disease, https://pmc.ncbi.nlm.nih.gov/articles/PMC2814421)\n- (Novel strategies for the prevention of dementia from Alzheimer's disease, https://pmc.ncbi.nlm.nih.gov/articles/PMC3181917)"
+    }
+  ]
+}
