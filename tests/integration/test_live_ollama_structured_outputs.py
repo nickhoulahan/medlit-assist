@@ -2,7 +2,6 @@ import pytest
 
 from src.medlit_agent.agent.agent import OllamaAgent
 
-
 pytestmark = pytest.mark.asyncio
 
 

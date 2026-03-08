@@ -68,7 +68,7 @@ def test_render_research_synthesis_markdown_contains_sections():
         what_the_research_found="Found A",
         why_it_matters="Matters because B",
         the_science_behind_it="Mechanism C",
-        sources=["(Title, https://pmc.ncbi.nlm.nih.gov/articles/PMC123)"]
+        sources=["(Title, https://pmc.ncbi.nlm.nih.gov/articles/PMC123)"],
     )
 
     rendered = model.to_markdown()
