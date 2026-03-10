@@ -99,6 +99,48 @@ The assistant will:
 3. Explain findings in simple, accessible language
 4. Provide links to the original articles
 
+## Evaluation (RAGAS)
+
+You can generate a report for a subset of MedQA questions using:
+
+- **Faithfulness**
+- **Answer Relevancy**
+- **Answer Correctness**
+- **Answer Accuracy**
+- **Context Precision**
+
+Run:
+
+```bash
+python -m tests.evals.ragas.run_medqa_ragas_eval --sample-size 10 --seed 42
+```
+
+Optional filters:
+
+```bash
+python -m tests.evals.ragas.run_medqa_ragas_eval \
+  --sample-size 15 \
+  --qtypes "treatment,prevention" \
+  --agent-model gpt-oss:20b \
+  --evaluator-model gpt-oss:20b
+```
+
+Reports are saved to `tests/evals/ragas/reports/` as timestamped JSON files.
+
+To compare responses **with** and **without** tool calls in one run:
+
+```bash
+python -m tests.evals.ragas.run_medqa_ragas_eval \
+  --sample-size 5 \
+  --tool-mode compare
+```
+
+`compare` runs each question twice:
+- `force-pmc`: always retrieves PMC docs before generating a response
+- `no-tools`: disables tool calls and answers directly
+
+The report includes `summary_by_mode` and per-row `tool_mode` so you can compare scores side-by-side.
+
 
 ## Technologies Used
 
