@@ -5,10 +5,10 @@ from typing import Any
 
 from ragas.metrics.collections import (
     AnswerAccuracy,
-    AnswerCorrectness,
     AnswerRelevancy,
     ContextPrecision,
-    Faithfulness,
+    NoiseSensitivity,
+    SemanticSimilarity,
 )
 
 
@@ -40,8 +40,8 @@ def build_ragas_metrics(
     relevancy_strictness: int = 3,
 ) -> dict[str, Any]:
     return {
-        "faithfulness": _build_metric(
-            Faithfulness,
+        "noise_sensitivity": _build_metric(
+            NoiseSensitivity,
             llm=evaluator_llm,
             embeddings=evaluator_embeddings,
             strictness=relevancy_strictness,
@@ -52,8 +52,8 @@ def build_ragas_metrics(
             embeddings=evaluator_embeddings,
             strictness=relevancy_strictness,
         ),
-        "answer_correctness": _build_metric(
-            AnswerCorrectness,
+        "answer_similarity": _build_metric(
+            SemanticSimilarity,
             llm=evaluator_llm,
             embeddings=evaluator_embeddings,
             strictness=relevancy_strictness,

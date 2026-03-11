@@ -5,6 +5,7 @@ import asyncio
 import csv
 import gc
 import json
+import os
 import random
 import re
 import shutil
@@ -18,6 +19,7 @@ from uuid import uuid4
 from openai import AsyncOpenAI
 from ragas.embeddings import HuggingFaceEmbeddings
 from ragas.llms import llm_factory
+from slugify import slugify
 
 from src.medlit_agent.agent.agent import OllamaAgent
 from src.medlit_agent.pmc_service.chroma_db import ChromaDB
@@ -29,31 +31,27 @@ from tests.evals.ragas.ragas_metrics import build_ragas_metrics, score_metric
 
 
 METRIC_KEYS = [
-    "faithfulness",
+    "noise_sensitivity",
     "answer_relevancy",
-    "answer_correctness",
+    "answer_similarity",
     "answer_accuracy",
     "context_precision",
 ]
+FULLTEXT_METRIC_KEYS = ["answer_relevancy"]
 
 MAX_EVAL_REFERENCE_CHARS = 1200
-REFERENCE_REQUIRED_METRICS = {"answer_correctness", "answer_accuracy"}
+REFERENCE_REQUIRED_METRICS = {"answer_similarity", "answer_accuracy"}
 
 
 def _build_evaluator_llm(
     model_name: str,
-    *,
-    evaluator_max_tokens: int,
-    ollama_base_url: str,
-    ollama_api_key: str,
+    openai_api_key: str,
 ) -> Any:
-    client = AsyncOpenAI(base_url=ollama_base_url, api_key=ollama_api_key)
+    client = AsyncOpenAI(api_key=openai_api_key)
     return llm_factory(
         model=model_name,
         provider="openai",
         client=client,
-        max_tokens=evaluator_max_tokens,
-        max_completion_tokens=evaluator_max_tokens,
         temperature=0.0,
     )
 
@@ -62,27 +60,17 @@ def _build_evaluator_embeddings(model_name: str) -> Any:
     return HuggingFaceEmbeddings(model=model_name)
 
 
-def _resolve_eval_max_tokens(cli_value: int) -> int:
-    if cli_value <= 0:
-        return 800
-    return cli_value
-
-
 def _build_single_metric(
     *,
     metric_key: str,
     evaluator_model: str,
-    evaluator_max_tokens: int,
-    ollama_base_url: str,
-    ollama_api_key: str,
+    openai_api_key: str,
     embedding_model: str,
     relevancy_strictness: int,
 ) -> Any:
     evaluator_llm = _build_evaluator_llm(
         evaluator_model,
-        evaluator_max_tokens=evaluator_max_tokens,
-        ollama_base_url=ollama_base_url,
-        ollama_api_key=ollama_api_key,
+        openai_api_key=openai_api_key,
     )
     evaluator_embeddings = _build_evaluator_embeddings(embedding_model)
     all_metrics = build_ragas_metrics(
@@ -95,6 +83,10 @@ def _build_single_metric(
 
 def _default_csv_path() -> Path:
     return Path(__file__).parent / "medqa_data" / "medqa.csv"
+
+
+def _default_fulltext_questions_path() -> Path:
+    return Path(__file__).parent / "doc_questions" / "pmcid_questions.json"
 
 
 def _report_dir() -> Path:
@@ -120,17 +112,42 @@ def _load_medqa_rows(csv_path: Path) -> list[dict[str, str]]:
     return rows
 
 
+def _load_fulltext_rows(json_path: Path) -> list[dict[str, str]]:
+    payload = json.loads(json_path.read_text(encoding="utf-8"))
+    if not isinstance(payload, list):
+        raise ValueError("Fulltext questions JSON must contain a list of objects.")
+
+    rows: list[dict[str, str]] = []
+    for index, item in enumerate(payload, start=1):
+        if not isinstance(item, dict):
+            raise ValueError(f"Invalid entry at index {index}: expected object.")
+
+        pmcid = str(item.get("pmcid") or "").strip()
+        question = str(item.get("question") or "").strip()
+        if not pmcid or not question:
+            raise ValueError(
+                f"Invalid entry at index {index}: both 'pmcid' and 'question' are required."
+            )
+
+        rows.append(
+            {
+                "qtype": "fulltext",
+                "pmcid": pmcid,
+                "question": question,
+                "answer": str(item.get("answer") or "").strip(),
+            }
+        )
+
+    return rows
+
+
 def _subset_rows(
     rows: list[dict[str, str]],
     *,
     sample_size: int,
     seed: int,
-    qtypes: list[str] | None,
 ) -> list[dict[str, str]]:
     filtered = rows
-    if qtypes:
-        allowed = {item.strip().lower() for item in qtypes if item.strip()}
-        filtered = [row for row in rows if row["qtype"].lower() in allowed]
 
     if sample_size <= 0:
         return filtered
@@ -149,7 +166,7 @@ def _safe_mean(values: list[float]) -> float | None:
 
 
 def _slugify_model_name(model_name: str) -> str:
-    slug = re.sub(r"[^a-zA-Z0-9]+", "-", model_name.strip().lower()).strip("-")
+    slug = slugify(model_name)
     return slug or "unknown-model"
 
 
@@ -366,7 +383,10 @@ async def _generate_fulltext_response(
 
 async def _run_eval(args: argparse.Namespace) -> dict[str, Any]:
     csv_path = Path(args.csv_path)
-    qtypes = [item for item in args.qtypes.split(",") if item.strip()]
+    fulltext_questions_path = Path(args.fulltext_questions_path)
+    active_metric_keys = (
+        FULLTEXT_METRIC_KEYS if args.eval_mode == "fulltext" else METRIC_KEYS
+    )
 
     eval_rows: list[dict[str, str]]
     if args.eval_mode == "search":
@@ -375,18 +395,15 @@ async def _run_eval(args: argparse.Namespace) -> dict[str, Any]:
             all_rows,
             sample_size=args.sample_size,
             seed=args.seed,
-            qtypes=qtypes or None,
         )
         if not eval_rows:
-            raise ValueError("No MedQA rows selected. Check --csv-path or --qtypes filter.")
+            raise ValueError("No MedQA rows selected. Check --csv-path.")
     else:
-        eval_rows = [
-            {
-                "qtype": "fulltext",
-                "question": args.fulltext_question,
-                "answer": "",
-            }
-        ]
+        eval_rows = _load_fulltext_rows(fulltext_questions_path)
+        if not eval_rows:
+            raise ValueError(
+                "No fulltext rows selected. Check --fulltext-questions-path."
+            )
 
     scored_rows: list[dict[str, Any]] = []
 
@@ -418,12 +435,12 @@ async def _run_eval(args: argparse.Namespace) -> dict[str, Any]:
                 else:
                     raw_response, retrieved_contexts, collection_name = await _generate_fulltext_response(
                         question=question,
-                        pmcid=args.fulltext_pmcid,
+                        pmcid=str(row.get("pmcid") or ""),
                         agent_model=args.agent_model,
                         agent_temperature=args.agent_temperature,
                         fulltext_n_results=args.fulltext_n_results,
                     )
-                    sample_result["pmcid"] = args.fulltext_pmcid
+                    sample_result["pmcid"] = str(row.get("pmcid") or "")
                     sample_result["temporary_collection"] = collection_name
                 response = _clean_agent_response_for_eval(raw_response)
 
@@ -441,25 +458,22 @@ async def _run_eval(args: argparse.Namespace) -> dict[str, Any]:
         "csv_path": str(csv_path),
         "sample_size": args.sample_size,
         "seed": args.seed,
-        "qtypes": qtypes,
         "agent_model": args.agent_model,
         "agent_temperature": args.agent_temperature,
         "evaluator_model": args.evaluator_model,
-        "evaluator_max_tokens": _resolve_eval_max_tokens(args.evaluator_max_tokens),
-        "ollama_base_url": args.ollama_base_url,
         "embedding_service": "HuggingFaceEmbeddings",
         "embedding_model": args.embedding_model,
         "relevancy_strictness": args.relevancy_strictness,
-        "metrics": METRIC_KEYS,
+        "metrics": active_metric_keys,
         "eval_mode": args.eval_mode,
         "tool_mode": "tools",
         "pmc_max_results": args.pmc_max_results,
-        "fulltext_pmcid": args.fulltext_pmcid,
-        "fulltext_question": args.fulltext_question,
+        "fulltext_questions_path": str(fulltext_questions_path),
+        "fulltext_rows": len(eval_rows) if args.eval_mode == "fulltext" else None,
         "fulltext_n_results": args.fulltext_n_results,
     }
 
-    for metric_key in METRIC_KEYS:
+    for metric_key in active_metric_keys:
         for row in scored_rows:
             if row.get("status") != "ok":
                 row[f"{metric_key}_error"] = row.get("error") or "generation_failed"
@@ -484,11 +498,7 @@ async def _run_eval(args: argparse.Namespace) -> dict[str, Any]:
                 metric = _build_single_metric(
                     metric_key=metric_key,
                     evaluator_model=args.evaluator_model,
-                    evaluator_max_tokens=_resolve_eval_max_tokens(
-                        args.evaluator_max_tokens
-                    ),
-                    ollama_base_url=args.ollama_base_url,
-                    ollama_api_key=args.ollama_api_key,
+                    openai_api_key=args.openai_api_key,
                     embedding_model=args.embedding_model,
                     relevancy_strictness=args.relevancy_strictness,
                 )
@@ -513,12 +523,12 @@ async def _run_eval(args: argparse.Namespace) -> dict[str, Any]:
             continue
         metric_errors = {
             key: row.get(f"{key}_error")
-            for key in METRIC_KEYS
+            for key in active_metric_keys
             if row.get(f"{key}_error")
         }
         missing_scores = [
             key
-            for key in METRIC_KEYS
+            for key in active_metric_keys
             if row.get(key) is None and not row.get(f"{key}_skipped")
         ]
         if metric_errors or missing_scores:
@@ -533,7 +543,7 @@ async def _run_eval(args: argparse.Namespace) -> dict[str, Any]:
         "ok": sum(1 for item in scored_rows if item.get("status") == "ok"),
         "errors": sum(1 for item in scored_rows if item.get("status") == "error"),
     }
-    for metric_key in METRIC_KEYS:
+    for metric_key in active_metric_keys:
         valid_scores = [
             float(item[metric_key])
             for item in scored_rows
@@ -549,7 +559,7 @@ async def _run_eval(args: argparse.Namespace) -> dict[str, Any]:
             "ok": sum(1 for item in mode_rows if item.get("status") == "ok"),
             "errors": sum(1 for item in mode_rows if item.get("status") == "error"),
         }
-        for metric_key in METRIC_KEYS:
+        for metric_key in active_metric_keys:
             mode_scores = [
                 float(item[metric_key])
                 for item in mode_rows
@@ -606,16 +616,10 @@ async def _amain() -> None:
         help="Random seed used when sampling rows",
     )
     parser.add_argument(
-        "--qtypes",
-        type=str,
-        default="",
-        help="Optional comma-separated qtype filter",
-    )
-    parser.add_argument(
         "--agent-model",
         type=str,
         default="gpt-oss:20b",
-        choices=["gpt-oss:20b", "qwen3:8b", "gemma3:4b", "granite3.3:2b"],
+        choices=["gpt-oss:20b", "qwen3:8b", "granite3.3:2b", "llama3.1:8b"],
         help="Ollama model used by the MedLit agent",
     )
     parser.add_argument(
@@ -627,39 +631,8 @@ async def _amain() -> None:
     parser.add_argument(
         "--evaluator-model",
         type=str,
-        default="gpt-oss:20b",
-        choices=["gpt-oss:20b", "qwen3:8b", "gemma3:4b", "granite3.3:2b"],
-        help="Ollama model used by RAGAS evaluator",
-    )
-    parser.add_argument(
-        "--model",
-        type=str,
-        default="",
-        help=(
-            "Optional convenience override to use the same Ollama model for "
-            "both agent and evaluator"
-        ),
-    )
-    parser.add_argument(
-        "--evaluator-max-tokens",
-        type=int,
-        default=800,
-        help=(
-            "Maximum completion tokens for evaluator model calls "
-            "used by RAGAS metrics"
-        ),
-    )
-    parser.add_argument(
-        "--ollama-base-url",
-        type=str,
-        default="http://localhost:11434/v1",
-        help="OpenAI-compatible base URL for Ollama",
-    )
-    parser.add_argument(
-        "--ollama-api-key",
-        type=str,
-        default="ollama",
-        help="API key used for OpenAI-compatible Ollama client, otherwise it fails",
+        default="gpt-4.1-mini-2025-04-14",
+        help="Model used by RAGAS evaluator",
     )
     parser.add_argument(
         "--embedding-model",
@@ -680,7 +653,7 @@ async def _amain() -> None:
         default="search",
         help=(
             "Eval pipeline mode: search=MedQA query with search tool, "
-            "fulltext=PMC full-text retrieval + chunking + temporary Chroma query"
+            "fulltext=read doc_questions JSON and run PMC full-text retrieval per entry"
         ),
     )
     parser.add_argument(
@@ -690,16 +663,10 @@ async def _amain() -> None:
         help="Number of PMC records to retrieve in force-pmc mode",
     )
     parser.add_argument(
-        "--fulltext-pmcid",
+        "--fulltext-questions-path",
         type=str,
-        default="PMC10923097",
-        help="PMC ID used for fulltext eval mode",
-    )
-    parser.add_argument(
-        "--fulltext-question",
-        type=str,
-        default="What role does nicotine play in preventing Parkinson's?",
-        help="Question used for fulltext eval mode",
+        default=str(_default_fulltext_questions_path()),
+        help="JSON file of fulltext eval rows with pmcid/question pairs",
     )
     parser.add_argument(
         "--fulltext-n-results",
@@ -710,9 +677,12 @@ async def _amain() -> None:
 
     args = parser.parse_args()
 
-    if args.model.strip():
-        args.agent_model = args.model.strip()
-        args.evaluator_model = args.model.strip()
+    args.openai_api_key = os.getenv("OPENAI_API_KEY", "").strip()
+
+    if not args.openai_api_key:
+        raise ValueError(
+            "No OpenAI API key found for evaluator. Set OPENAI_API_KEY."
+        )
 
     payload = await _run_eval(args)
     _write_report(payload, suffix=f"_{args.eval_mode}")
