@@ -99,6 +99,32 @@ The assistant will:
 3. Explain findings in simple, accessible language
 4. Provide links to the original articles
 
+## Evaluation (RAGAS)
+
+You can generate a report for a subset of MedQA questions using:
+
+  **[Answer Accuracy] (https://docs.ragas.io/en/stable/concepts/metrics/available_metrics/nvidia_metrics/#answer-accuracy)**
+  **[Answer Relevancy] (https://docs.ragas.io/en/stable/concepts/metrics/available_metrics/answer_relevance/)**
+  **[Context Precision] (https://docs.ragas.io/en/latest/concepts/metrics/available_metrics/context_precision/)**
+  **[Noise Sensitivity] (https://docs.ragas.io/en/latest/concepts/metrics/available_metrics/noise_sensitivity/)**
+  **[Semantic Similarity] (https://docs.ragas.io/en/stable/concepts/metrics/available_metrics/semantic_similarity/)**
+
+
+### RAGAS evals
+
+Test answer relevancy (no reference text available, but uses prepared questions at tests/evals/ragas/doc_questions/)
+
+```bash
+python -m tests.evals.ragas.run_medqa_ragas_eval --eval-mode fulltext --agent-model llama3.1:8b --evaluator-model gpt-4.1-mini-2025-04-14
+```
+
+Test all metrics with random sample of MedQA answer (can vary sample-size and seed to mix results)
+Note, keep sample-size small due to duration of tests and tokens needed.
+
+```bash
+python -m tests.evals.ragas.run_medqa_ragas_eval --eval-mode search --sample-size 3 --seed 42 --agent-model llama3.1:8b --evaluator-model gpt-4.1-mini-2025-04-14
+```
+
 
 ## Technologies Used
 
