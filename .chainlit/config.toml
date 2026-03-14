@@ -48,7 +48,7 @@ reaction_on_message_received = false
 
 # Authorize users to spontaneously upload files with messages
 [features.spontaneous_file_upload]
-    enabled = true
+    enabled = false
     # Define accepted file types using MIME types
     # Examples:
     # 1. For specific file types:
@@ -64,9 +64,13 @@ reaction_on_message_received = false
 
 [features.audio]
     # Enable audio features
-    enabled = false
+    enabled = true
     # Sample rate of the audio
     sample_rate = 24000
+
+[features.speech_to_text]
+enabled = true
+language = "en-US"
 
 [features.mcp]
     # Enable Model Context Protocol (MCP) features
