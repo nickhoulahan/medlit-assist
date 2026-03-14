@@ -1,0 +1,39 @@
+{
+  "generated_at": "2026-03-13T21:00:10.374505+00:00",
+  "model": "granite3.3:2b",
+  "question": "Can diet help with type 2 diabetes?",
+  "pmc_query": "Can diet help with type 2 diabetes?",
+  "pmc_results": 3,
+  "results": [
+    {
+      "prompt_label": "baseline",
+      "status": "ok",
+      "flesch_reading_ease": 9.351783876500889,
+      "flesch_kincaid_grade": 17.93979416809606,
+      "word_count": 265,
+      "sentence_count": 11,
+      "prompt": "Can diet help with type 2 diabetes?",
+      "output": "**What the research found:**\n\nThe research suggests that a combination of a low-carbohydrate diet and chronic exercise in hypoxia may improve glycemic control and cardiovascular parameters in patients with type 2 diabetes. Additionally, individuals with type 2 diabetes tend to choose lower-carbohydrate and lower-calorie food menus at home, which could be beneficial for managing the condition. The study also found that increasing plant protein intake, while adjusting for energy, is associated with a lower risk of developing type 2 diabetes in patients with coronary heart disease.\n\n**Why it matters:**\n\nThese findings are significant as they highlight the potential benefits of combining dietary interventions with exercise, especially in hypoxic conditions, for managing type 2 diabetes. Understanding dietary preferences of patients with type 2 diabetes can also aid in personalized dietary recommendations, improving self-management and quality of life. Furthermore, emphasizing the importance of plant-based proteins in preventing type 2 diabetes could guide public health strategies.\n\n**The science behind it:**\n\nThe low-carbohydrate diet is believed to improve glycemic control by reducing insulin resistance and enhancing insulin sensitivity. Exercise in hypoxia, through specific adaptations like increased GLUT-4 expression and improved glucose tolerance, may further support glycemic control. The preference for lower-carbohydrate and lower-calorie meals at home, as observed in the study, could be attributed to the dietary patterns' effectiveness in managing blood sugar levels. The CORDIOPREV study found that increasing plant protein intake, alongside other dietary changes, was associated with a reduced risk of type 2 diabetes in patients with coronary heart disease, possibly due to the positive effects of plant proteins on metabolic health.\n\n**Sources:**\n- (PMC10924702)\n- (PMC9610133)\n- (PMC8067822)"
+    },
+    {
+      "prompt_label": "plain_language",
+      "status": "ok",
+      "flesch_reading_ease": -6.943956639566352,
+      "flesch_kincaid_grade": 19.88650406504065,
+      "word_count": 205,
+      "sentence_count": 9,
+      "prompt": "Can diet help with type 2 diabetes? Explain this in simple, everyday language for non-experts. Avoid technical terms and jargon, unless it is central to understanding the topic.",
+      "output": "**What the research found:**\n\nStudies suggest that a combination of a low-carbohydrate diet and regular exercise, especially in hypoxic conditions, might improve glycemic control and cardiovascular health in people with type 2 diabetes. Additionally, individuals with type 2 diabetes tend to choose lower-carbohydrate and lower-calorie meals when using online diet management tools. Furthermore, increasing plant protein intake may reduce the risk of developing type 2 diabetes, particularly in patients with coronary heart disease.\n\n**Why it matters:**\n\nThese findings are significant because they highlight potential dietary and exercise strategies to manage type 2 diabetes more effectively, potentially reducing the risk of complications and improving overall health. Understanding dietary preferences and nutritional intake can help tailor personalized dietary advice for better disease management.\n\n**The science behind it:**\n\nThe low-carbohydrate diet aids in controlling blood sugar levels by reducing the body's reliance on glucose for energy. Exercise, especially in hypoxic conditions, can enhance insulin sensitivity and improve glucose metabolism. The preference for lower-carbohydrate and lower-calorie meals might be linked to better glycemic control and weight management. Increasing plant protein intake could be beneficial due to its association with reduced risk of type 2 diabetes, possibly through improved insulin sensitivity and better blood sugar regulation.\n\n**Sources:**\n- https://pmc.ncbi.nlm.nih.gov/articles/PMC10924702\n- https://pmc.ncbi.nlm.nih.gov/articles/PMC9610133\n- https://pmc.ncbi.nlm.nih.gov/articles/PMC8067822"
+    },
+    {
+      "prompt_label": "very_simple",
+      "status": "ok",
+      "flesch_reading_ease": -10.680563765736167,
+      "flesch_kincaid_grade": 20.35247947454845,
+      "word_count": 203,
+      "sentence_count": 9,
+      "prompt": "Can diet help with type 2 diabetes? Use short sentences, common words, and avoid medical jargon. A middle school reading level is ideal. Explain any necessary technical terms in simple language.",
+      "output": "**What the research found:**\n\nThese studies suggest that a combination of a low-carbohydrate diet and regular exercise, especially in hypoxic conditions, might help manage type 2 diabetes. Additionally, individuals with type 2 diabetes tend to choose lower-carbohydrate and lower-calorie meals when using online diet management tools. Furthermore, increasing plant protein intake could potentially reduce the risk of developing type 2 diabetes, particularly in patients with coronary heart disease.\n\n**Why it matters:**\n\nThese findings are significant because they provide insights into effective dietary strategies for managing type 2 diabetes. Understanding dietary preferences and implementing dietary interventions based on these preferences could improve glycemic control and cardiovascular health. Moreover, these strategies could empower patients to make healthier food choices, contributing to better self-management of the condition.\n\n**The science behind it:**\n\nThe low-carbohydrate diet aids in improving glycemic control and lipid profiles, while exercise in hypoxia enhances angiogenesis, glycogen supply, and glucose tolerance. The preference for lower-carbohydrate and lower-calorie meals in online applications indicates a potential for personalized dietary interventions. Increasing plant protein intake correlates with reduced risk of type 2 diabetes, possibly due to its positive impact on carbohydrate, fiber, and legume intake, and negative impact on saturated fatty acids intake.\n\n**Sources:**\n- https://pmc.ncbi.nlm.nih.gov/articles/PMC10924702\n- https://pmc.ncbi.nlm.nih.gov/articles/PMC9610133\n- https://pmc.ncbi.nlm.nih.gov/articles/PMC8067822"
+    }
+  ]
+}

@@ -1,0 +1,89 @@
+LLM Readability Review Report
+
+Generated: 2026-03-13T20:54:46.022450+00:00
+Model: qwen3:8b
+PMC Query: What treatments can improve tinnitus symptoms?
+PMC Results: 3
+
+================================================================================
+
+Prompt 1: baseline
+Status: ok
+Scores: FRE=-1.41, FKG=17.79, Words=262, Sentences=15
+
+Prompt:
+What treatments can improve tinnitus symptoms?
+
+Output:
+**What the research found:**
+
+Several treatments show promise for improving tinnitus symptoms. Temporomandibular disorder (TMD) treatments, like physical therapy or bite adjustments, helped over 50% of patients with tinnitus and related ear symptoms (Naderi et al., https://pmc.ncbi.nlm.nih.gov/articles/PMC10666408). A smartphone app combining cognitive behavioral therapy (CBT) and customized sound therapy significantly reduced tinnitus severity, anxiety, and sleep issues in a study of 92 patients (Goshtasbi et al., https://pmc.ncbi.nlm.nih.gov/articles/PMC12579528). For tinnitus linked to obesity-related idiopathic intracranial hypertension (IIH), bariatric surgery led to major improvements, with 56% of patients reporting reduced tinnitus (Sun et al., https://pmc.ncbi.nlm.nih.gov/articles/PMC7828958).
+
+**Why it matters:**
+
+These findings offer diverse options for tinnitus management. TMD treatments highlight the importance of checking jaw-related causes, which are often overlooked. The smartphone app provides an accessible, non-invasive tool for managing tinnitus alongside mental health. Bariatric surgery shows potential for severe cases tied to obesity and IIH, emphasizing that tinnitus can have underlying medical causes requiring specialized care.
+
+**The science behind it:**
+
+TMD treatments target jaw misalignment or muscle tension that may affect ear structures, reducing referred pain or pressure. CBT and sound therapy address tinnitus by altering brain responses to sound and reducing stress, which can worsen symptoms. Bariatric surgery reduces obesity-related intracranial pressure, alleviating tinnitus caused by fluid buildup in the skull. All approaches aim to either directly reduce physical stressors or modify the brain’s perception of tinnitus.
+
+**Sources:**
+- Temporomandibular treatments are significantly efficient in improving otologic symptoms, https://pmc.ncbi.nlm.nih.gov/articles/PMC10666408
+- Smartphone-Based Cognitive Behavioral Therapy and Customized Sound Therapy for Tinnitus: A Randomized Controlled Trial, https://pmc.ncbi.nlm.nih.gov/articles/PMC12579528
+- Idiopathic intracranial hypertension and bariatric surgery: a systematic review, https://pmc.ncbi.nlm.nih.gov/articles/PMC7828958
+
+--------------------------------------------------------------------------------
+
+Prompt 2: plain_language
+Status: ok
+Scores: FRE=29.76, FKG=13.95, Words=292, Sentences=15
+
+Prompt:
+What treatments can improve tinnitus symptoms? Explain this in simple, everyday language for non-experts. Avoid technical terms and jargon, unless it is central to understanding the topic.
+
+Output:
+**What the research found:**
+
+Studies show that certain treatments can help reduce tinnitus symptoms. One study found that treating jaw-related issues (like temporomandibular disorder, or TMD) can improve tinnitus, especially when the symptoms are linked to jaw problems or neck tension. Another study showed that using a smartphone app with cognitive behavioral therapy (CBT) and customized sounds can significantly reduce tinnitus severity, along with improving anxiety, sleep, and mood. A third study linked tinnitus to a condition called idiopathic intracranial hypertension (IIH), where excess pressure in the brain can cause symptoms like tinnitus, and weight loss through surgery helped improve these symptoms in some cases.
+
+**Why it matters:**
+
+These findings are important because they offer new options for people with tinnitus that doesn’t have a clear cause. For example, jaw or neck issues might be overlooked as causes of tinnitus, but treating them can provide relief. Similarly, digital tools like smartphone apps could make therapy more accessible. For rare conditions like IIH, weight loss might be a key treatment, showing that tinnitus can sometimes be a sign of a larger health issue.
+
+**The science behind it:**
+
+Tinnitus can have many causes, such as jaw misalignment, stress, or pressure on the brain. Treating TMD involves physical therapy, mouth guards, or addressing neck tension, which may reduce pressure on nerves linked to hearing. The smartphone app uses CBT to help patients manage stress and negative thoughts about tinnitus, while customized sounds mask the ringing. For IIH, weight loss reduces cerebrospinal fluid pressure, easing symptoms like tinnitus and headaches.
+
+**Sources:**
+- Temporomandibular treatments are significantly efficient in improving otologic symptoms, https://pmc.ncbi.nlm.nih.gov/articles/PMC10666408
+- Smartphone-Based Cognitive Behavioral Therapy and Customized Sound Therapy for Tinnitus: A Randomized Controlled Trial, https://pmc.ncbi.nlm.nih.gov/articles/PMC12579528
+- Idiopathic intracranial hypertension and bariatric surgery: a systematic review, https://pmc.ncbi.nlm.nih.gov/articles/PMC7828958
+
+--------------------------------------------------------------------------------
+
+Prompt 3: very_simple
+Status: ok
+Scores: FRE=34.45, FKG=11.87, Words=220, Sentences=16
+
+Prompt:
+What treatments can improve tinnitus symptoms? Use short sentences, common words, and avoid medical jargon. A middle school reading level is ideal. Explain any necessary technical terms in simple language.
+
+Output:
+**What the research found:**
+
+Treatments for tinnitus include fixing jaw and neck problems, using smartphone apps with therapy, and weight loss surgery. Jaw and neck issues (like teeth grinding) can cause tinnitus, and fixing them helps. A smartphone app with sound therapy and mental exercises (CBT) reduced tinnitus and stress. Weight loss surgery helped people with a rare brain condition (IIH) that causes tinnitus by lowering pressure in the head.
+
+**Why it matters:**
+
+These treatments offer hope for people with tinnitus who don’t find relief from usual methods. Fixing jaw/neck issues is simple and effective. Smartphone apps give easy access to therapy. Surgery helps severe cases linked to weight and brain pressure. All options show tinnitus can improve with targeted care.
+
+**The science behind it:**
+
+Jaw and neck problems (TMD) can strain nerves and blood flow, causing tinnitus. Sound therapy distracts the brain from hearing the ringing, while CBT helps manage stress and negative thoughts about tinnitus. Weight loss surgery reduces brain pressure in IIH, easing symptoms like tinnitus. These methods target different causes of tinnitus, showing that treatment depends on the root problem.
+
+**Sources:**
+- Temporomandibular Treatments Are Significantly Efficient in Improving Otologic Symptoms, https://pmc.ncbi.nlm.nih.gov/articles/PMC10666408
+- Smartphone-Based Cognitive Behavioral Therapy and Customized Sound Therapy for Tinnitus: A Randomized Controlled Trial, https://pmc.ncbi.nlm.nih.gov/articles/PMC12579528
+- Idiopathic Intracranial Hypertension and Bariatric Surgery: A Systematic Review, https://pmc.ncbi.nlm.nih.gov/articles/PMC7828958
+
+--------------------------------------------------------------------------------

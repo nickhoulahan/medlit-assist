@@ -1,0 +1,79 @@
+LLM Readability Review Report
+
+Generated: 2026-03-13T21:00:10.374505+00:00
+Model: granite3.3:2b
+PMC Query: What treatments can improve tinnitus symptoms?
+PMC Results: 3
+
+================================================================================
+
+Prompt 1: baseline
+Status: ok
+Scores: FRE=3.78, FKG=16.75, Words=194, Sentences=12
+
+Prompt:
+What treatments can improve tinnitus symptoms?
+
+Output:
+{
+    "what_the_research_found": "The research suggests that specific treatments can help improve tinnitus symptoms. These include temporomandibular disorder (TMD) treatments, smartphone-based cognitive behavioral therapy combined with customized sound therapy, and bariatric surgery for patients with idiopathic intracranial hypertension (IIH) and obesity.",
+    "why_it_matters:": "These findings are significant because they offer new treatment options for individuals suffering from tinnitus, a condition characterized by ringing or buzzing in the ears. TMD treatments can address underlying jaw and neck issues that may contribute to tinnitus. Cognitive behavioral therapy and sound therapy can help manage psychological factors influencing tinnitus perception. Bariatric surgery, for those with IIH and obesity, can effectively reduce intracranial pressure and alleviate tinnitus symptoms.",
+    "the_science_behind_it": "TMD treatments, as studied by Naderi et al. (2023), showed that addressing jaw and neck issues can significantly improve otologic symptoms like tinnitus. Goshtasbi et al. (2025) demonstrated that a smartphone-based cognitive behavioral therapy combined with customized sound therapy effectively reduced tinnitus symptoms, anxiety, sleep disturbances, and depression. The study by Sun et al. (2020) revealed that bariatric surgery led to substantial improvements in IIH symptoms, including headaches, visual disturbances, tinnitus, and papilledema, in patients with obesity and IIH.",
+    "sources": ["https://pmc.ncbi.nlm.nih.gov/articles/PMC10666408", "https://pmc.ncbi.nlm.nih.gov/articles/PMC12579528", "https://pmc.ncbi.nlm.nih.gov/articles/PMC7828958"]
+}
+
+--------------------------------------------------------------------------------
+
+Prompt 2: plain_language
+Status: ok
+Scores: FRE=6.88, FKG=17.21, Words=237, Sentences=12
+
+Prompt:
+What treatments can improve tinnitus symptoms? Explain this in simple, everyday language for non-experts. Avoid technical terms and jargon, unless it is central to understanding the topic.
+
+Output:
+**What the research found:**
+
+Treatments for tinnitus symptoms can vary. Some studies suggest that addressing temporomandibular disorders (TMD) through specific treatments can significantly improve otologic symptoms like earache, fullness, tinnitus, hearing loss, and dizziness. Another study found that a smartphone-based cognitive behavioral therapy combined with customized sound therapy effectively reduced tinnitus symptoms, improved anxiety, sleep, and mood. Bariatric surgery has also shown promise in treating idiopathic intracranial hypertension (IIH), a condition often associated with obesity, leading to improvements in IIH symptoms.
+
+**Why it matters:**
+
+These findings are important because they highlight diverse treatment options for tinnitus, a condition affecting many people worldwide. Recognizing the link between TMD and otologic symptoms can lead to better diagnosis and treatment. The use of technology, like smartphone apps, offers accessible and effective solutions for tinnitus management. For individuals with IIH, bariatric surgery can be a viable option for weight loss and symptom improvement, especially when conservative methods fail.
+
+**The science behind it:**
+
+The effectiveness of TMD treatments is attributed to addressing the underlying musculoskeletal issues that can cause referred symptoms in the ear. The smartphone-based therapy combines cognitive behavioral techniques to manage emotional responses to tinnitus and customized sound therapy to mask the ringing. Bariatric surgery's success in IIH treatment is linked to significant weight loss, which reduces intracranial pressure. These approaches demonstrate the potential of multidisciplinary care and innovative technology in managing tinnitus and related conditions.
+
+**Sources:**
+- https://pmc.ncbi.nlm.nih.gov/articles/PMC10666408
+- https://pmc.ncbi.nlm.nih.gov/articles/PMC12579528
+- https://pmc.ncbi.nlm.nih.gov/articles/PMC7828958
+
+--------------------------------------------------------------------------------
+
+Prompt 3: very_simple
+Status: ok
+Scores: FRE=3.91, FKG=17.91, Words=230, Sentences=11
+
+Prompt:
+What treatments can improve tinnitus symptoms? Use short sentences, common words, and avoid medical jargon. A middle school reading level is ideal. Explain any necessary technical terms in simple language.
+
+Output:
+**What the research found:**
+
+Treatments for tinnitus symptoms can vary. Some studies found that addressing temporomandibular disorders (TMD) through specific treatments can significantly improve otologic symptoms like earache, fullness, tinnitus, hearing loss, and dizziness. Another study showed that a smartphone-based cognitive behavioral therapy combined with customized sound therapy effectively reduced tinnitus symptoms, anxiety, sleep difficulties, and improved mood. Bariatric surgery has also been found to be beneficial for patients with idiopathic intracranial hypertension (IIH), a condition often associated with obesity, leading to substantial improvements in symptoms.
+
+**Why it matters:**
+
+These findings are crucial because they highlight diverse treatment options for tinnitus, a condition affecting many people worldwide. Recognizing the link between TMD, IIH, and obesity can lead to more comprehensive patient care, potentially improving quality of life for those suffering from tinnitus. Early identification and targeted interventions can be more effective than just managing symptoms.
+
+**The science behind it:**
+
+The effectiveness of TMD treatments is attributed to addressing underlying muscular and skeletal issues that may contribute to otologic symptoms. The smartphone-based therapy likely works by helping patients manage their emotional responses to tinnitus and providing sound stimulation to distract from the ringing. Bariatric surgery's success in IIH treatment is thought to be due to significant weight loss, which reduces intracranial pressure. These approaches emphasize a holistic approach to tinnitus management, considering physical, psychological, and lifestyle factors.
+
+**Sources:**
+- https://pmc.ncbi.nlm.nih.gov/articles/PMC10666408
+- https://pmc.ncbi.nlm.nih.gov/articles/PMC12579528
+- https://pmc.ncbi.nlm.nih.gov/articles/PMC7828958
+
+--------------------------------------------------------------------------------

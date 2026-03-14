@@ -1,0 +1,39 @@
+{
+  "generated_at": "2026-03-13T21:00:10.374505+00:00",
+  "model": "granite3.3:2b",
+  "question": "What drug preventions are there for Alzheimer's disease?",
+  "pmc_query": "What drug preventions are there for Alzheimer's disease?",
+  "pmc_results": 3,
+  "results": [
+    {
+      "prompt_label": "baseline",
+      "status": "ok",
+      "flesch_reading_ease": 20.731104651162838,
+      "flesch_kincaid_grade": 15.708953488372092,
+      "word_count": 172,
+      "sentence_count": 8,
+      "prompt": "What drug preventions are there for Alzheimer's disease?",
+      "output": "{\n    \"what_the_research_found\": \"There are currently no highly effective treatments or preventatives for Alzheimer's disease (AD). However, some studies have explored potential drugs and dietary interventions for AD prevention.\",\n    \"why_it_matters:\": \"The lack of effective prevention methods for AD is a significant concern as the disease's prevalence is expected to double by 2040. Understanding potential preventative measures is crucial for managing the growing burden of AD.\",\n    \"the_science_behind_it\": \"Several studies have investigated the role of diet, particularly the Mediterranean diet (MD) and the MIND diet, in reducing the risk of AD. These diets have been linked to a lower risk of developing AD, with the MD reducing the risk by 53% and 35% for moderate adherence, and the MIND diet showing a 53% and 35% reduction in AD risk, respectively. The MD and DASH diets, known for their high content of omega-6 fatty acids and vitamin D, have been associated with lower AD risk. However, the high cost of these diet components raises questions about their practicality as a widespread prevention strategy.\",\n    \"sources\": [\"https://pmc.ncbi.nlm.nih.gov/articles/PMC12878103\", \"https://pmc.ncbi.nlm.nih.gov/articles/PMC10539673\", \"https://pmc.ncbi.nlm.nih.gov/articles/PMC8868221\"]\n}"
+    },
+    {
+      "prompt_label": "plain_language",
+      "status": "ok",
+      "flesch_reading_ease": 2.166019417475752,
+      "flesch_kincaid_grade": 16.61264909847434,
+      "word_count": 103,
+      "sentence_count": 7,
+      "prompt": "What drug preventions are there for Alzheimer's disease? Explain this in simple, everyday language for non-experts. Avoid technical terms and jargon, unless it is central to understanding the topic.",
+      "output": "{\n    \"what_the_research_found\": \"There are currently no highly effective treatments or preventatives for Alzheimer's disease (AD). However, some studies have explored potential drugs and dietary approaches for prevention.\",\n    \"why_it_matters:\": \"The search for effective AD prevention methods is crucial due to the projected increase in AD cases by 2040. Current treatments manage symptoms but don't prevent, slow, or cure the disease.\",\n    \"the_science_behind_it\": \"Several studies have investigated the use of antioxidants as a potential preventive measure. Antioxidants help combat oxidative stress, a factor linked to AD progression. Preclinical studies showed promise with natural antioxidants, and clinical trials are ongoing to evaluate their effectiveness.\",\n    \"sources\": [\"https://pmc.ncbi.nlm.nih.gov/articles/PMC12878103\", \"https://pmc.ncbi.nlm.nih.gov/articles/PMC10539673\", \"https://pmc.ncbi.nlm.nih.gov/articles/PMC8868221\"]\n}"
+    },
+    {
+      "prompt_label": "very_simple",
+      "status": "ok",
+      "flesch_reading_ease": 11.387066037735849,
+      "flesch_kincaid_grade": 15.621062893081767,
+      "word_count": 159,
+      "sentence_count": 10,
+      "prompt": "What drug preventions are there for Alzheimer's disease? Use short sentences, common words, and avoid medical jargon. A middle school reading level is ideal. Explain any necessary technical terms in simple language.",
+      "output": "{\n    \"what_the_research_found\": \"There are currently no highly effective treatments or preventatives for Alzheimer's disease (AD). Some prevention trials tested drugs but found no significant efficacy. However, researchers are exploring dietary patterns and natural antioxidants as potential preventive measures.\",\n    \"why_it_matters:\": \"As the prevalence of AD is expected to double by 2040, finding effective prevention strategies becomes crucial. Understanding how diet and antioxidants might lower the risk of AD could significantly impact public health.\",\n    \"the_science_behind_it\": \"The Mediterranean diet (MD) and the MIND diet have been linked to a reduced risk of AD. These diets emphasize fruits, vegetables, whole grains, and healthy fats, which may help lower oxidative stress in the brain. Omega-6 fatty acids from nuts and fish, and vitamin D, have shown potential in reducing amyloid-beta (A\u03b2) plaques, a hallmark of AD. Preclinical studies suggest that natural antioxidants could have neuroprotective effects and potentially prevent or treat AD. Combination antioxidant therapy is being investigated in clinical trials.\",\n    \"sources\": [\"https://pmc.ncbi.nlm.nih.gov/articles/PMC12878103\", \"https://pmc.ncbi.nlm.nih.gov/articles/PMC10539673\", \"https://pmc.ncbi.nlm.nih.gov/articles/PMC8868221\"]\n}"
+    }
+  ]
+}

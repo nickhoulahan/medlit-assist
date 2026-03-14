@@ -1,0 +1,79 @@
+LLM Readability Review Report
+
+Generated: 2026-03-13T21:00:10.374505+00:00
+Model: granite3.3:2b
+PMC Query: Does smoking prevent Parkinson's disease?
+PMC Results: 3
+
+================================================================================
+
+Prompt 1: baseline
+Status: ok
+Scores: FRE=26.52, FKG=12.85, Words=252, Sentences=19
+
+Prompt:
+Does smoking prevent Parkinson's disease?
+
+Output:
+**What the research found:**
+
+Smoking has been linked to a lower risk of developing Parkinson's disease (PD). This protective effect is observed in both active and passive smokers, meaning those who smoke and those who are exposed to secondhand smoke. However, the exact mechanisms behind this association are not fully understood.
+
+**Why it matters:**
+
+Understanding why smoking might lower the risk of PD is significant for public health. It could influence smoking cessation strategies and potentially lead to the identification of new therapeutic targets. It also raises questions about the broader implications of smoking on neurodegenerative diseases.
+
+**The science behind it:**
+
+The protective effect of smoking against PD is thought to be due to various components in tobacco smoke, including nicotine. Nicotine might have neuroprotective effects, possibly through mechanisms like monoamine oxidase inhibition, gut microbiome disruption, or antioxidant response induction. However, randomized controlled trials testing nicotine's effectiveness in PD have been inconclusive. The study also highlights the need to investigate other potential neuroprotective agents found in tobacco smoke.
+
+**Sources:**
+- (Yılmaz, M., Gökçe, A., & Öztürk, O. (2025). What Is the Real Impact of Smoking on Diseases Alleged to Benefit from It?. European Addiction Research, 31(6), 376–383. https://pmc.ncbi.nlm.nih.gov/articles/PMC12707872)
+- (Rose, K., Schwarzschild, M., & Gomperts, S. (2024). Clearing the Smoke: What Protects Smokers from Parkinson’s Disease?. Movement disorders : official journal of the Movement Disorder Society, 39(2), 267–272. https://pmc.ncbi.nlm.nih.gov/articles/PMC10923097)
+- (Nielsen, S., Gallagher, L., Lundin, J., Longstreth, W., Smith-Weller, T., Franklin, G., Swanson, P., & Checkoway, H. (2011). Environmental tobacco smoke and Parkinson disease. Movement Disorders, 27(2), 293–297. https://pmc.ncbi.nlm.nih.gov/articles/PMC3289937)
+
+--------------------------------------------------------------------------------
+
+Prompt 2: plain_language
+Status: ok
+Scores: FRE=11.51, FKG=16.19, Words=201, Sentences=11
+
+Prompt:
+Does smoking prevent Parkinson's disease? Explain this in simple, everyday language for non-experts. Avoid technical terms and jargon, unless it is central to understanding the topic.
+
+Output:
+**What the research found:**
+
+Studies have found that smoking may lower the risk of developing Parkinson's disease, but this association is not fully understood. Some research suggests that the protective effect might be due to nicotine or other components in tobacco smoke, while others propose that smoking could be a marker for other protective factors. However, clinical trials testing the effectiveness of nicotine in treating Parkinson's disease have not shown positive results.
+
+**Why it matters:**
+
+Understanding why smoking might lower Parkinson's risk is important for public health. It could influence smoking cessation strategies and potentially lead to the discovery of new treatments. If smoking's protective effect is confirmed, it might encourage smokers to quit, reducing their overall health risks.
+
+**The science behind it:**
+
+The exact mechanisms behind smoking's potential protective effect on Parkinson's are unclear. Some studies suggest that nicotine or other compounds in tobacco smoke might have neuroprotective properties. However, clinical trials testing nicotine's effectiveness in treating Parkinson's have been inconclusive. Other potential mechanisms include monoamine oxidase inhibition, gut microbiome disruption, and antioxidant response induction by low-level carbon monoxide exposure from tobacco smoke. Further research is needed to clarify these findings and explore alternative therapeutic avenues.
+
+**Sources:**
+- https://pmc.ncbi.nlm.nih.gov/articles/PMC12707872
+- https://pmc.ncbi.nlm.nih.gov/articles/PMC10923097
+- https://pmc.ncbi.nlm.nih.gov/articles/PMC3289937
+
+--------------------------------------------------------------------------------
+
+Prompt 3: very_simple
+Status: ok
+Scores: FRE=22.08, FKG=14.51, Words=157, Sentences=9
+
+Prompt:
+Does smoking prevent Parkinson's disease? Use short sentences, common words, and avoid medical jargon. A middle school reading level is ideal. Explain any necessary technical terms in simple language.
+
+Output:
+{
+    "what_the_research_found": "Studies have found that smoking may lower the risk of developing Parkinson's disease, but this isn't fully understood. Some research suggests that the protective effect might come from nicotine or other components in tobacco smoke, while others propose that smoking might be a sign of a healthier lifestyle or environment.",
+    "why_it_matters: "Understanding why smoking might lower Parkinson's risk is important because it could lead to better strategies for disease prevention. If smoking's protective effect is real, it might influence public health policies and encourage smoking cessation. Conversely, if it's not, it clarifies that other lifestyle choices are crucial.",
+    "the_science_behind_it: "The exact mechanisms behind smoking's potential protective effect on Parkinson's are unclear. Some studies point to nicotine's possible role, but clinical trials haven't shown clear benefits. Other research explores how components of tobacco smoke might have neuroprotective effects, even without nicotine. The debate centers on whether these effects are genuine or just correlations.",
+    "sources": ["https://pmc.ncbi.nlm.nih.gov/articles/PMC12707872", "https://doi.org/10.1002/mds.29707", "https://pmc.ncbi.nlm.nih.gov/articles/PMC3289937"]
+}
+
+--------------------------------------------------------------------------------
