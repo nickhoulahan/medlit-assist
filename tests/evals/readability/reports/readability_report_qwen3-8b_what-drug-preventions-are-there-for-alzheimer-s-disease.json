@@ -1,0 +1,39 @@
+{
+  "generated_at": "2026-03-13T20:54:46.022450+00:00",
+  "model": "qwen3:8b",
+  "question": "What drug preventions are there for Alzheimer's disease?",
+  "pmc_query": "What drug preventions are there for Alzheimer's disease?",
+  "pmc_results": 3,
+  "results": [
+    {
+      "prompt_label": "baseline",
+      "status": "ok",
+      "flesch_reading_ease": 20.98729468599035,
+      "flesch_kincaid_grade": 13.506376811594208,
+      "word_count": 230,
+      "sentence_count": 18,
+      "prompt": "What drug preventions are there for Alzheimer's disease?",
+      "output": "**What the research found:**\n\nCurrent research shows there are no proven drugs to prevent Alzheimer's disease. Studies tested existing medications but found no strong evidence they work to prevent the condition. However, dietary patterns like the Mediterranean diet, DASH diet, and MIND diet are linked to lower risks of Alzheimer's. Natural antioxidants (e.g., from plants) are being explored as potential preventatives, with some combinations in early clinical trials. No drugs have been approved for prevention yet.\n\n**Why it matters:**\n\nFinding effective prevention methods is critical because Alzheimer's is a major cause of dementia with no cure. While drugs remain elusive, lifestyle factors like diet and antioxidants offer promising avenues. Understanding these could lead to future treatments or preventive strategies, especially as the population ages and Alzheimer's prevalence rises.\n\n**The science behind it:**\n\nAlzheimer's involves brain changes like amyloid plaques and oxidative stress. Current drugs target symptoms, not root causes. Dietary patterns may reduce risk by lowering inflammation and supporting brain health (e.g., omega-6 fats, vitamin D). Antioxidants are studied for their ability to neutralize harmful free radicals linked to oxidative stress, a key factor in Alzheimer's progression. However, these approaches are still under investigation and not yet proven as drug-based preventions.\n\n**Sources:**\n- Recruitment methods for united states Alzheimer disease prevention trials, https://pmc.ncbi.nlm.nih.gov/articles/PMC12878103\n- Prevention of Alzheimer's disease through diet: An exploratory review, https://pmc.ncbi.nlm.nih.gov/articles/PMC10539673\n- Naturally Occurring Antioxidant Therapy in Alzheimer\u2019s Disease, https://pmc.ncbi.nlm.nih.gov/articles/PMC8868221"
+    },
+    {
+      "prompt_label": "plain_language",
+      "status": "ok",
+      "flesch_reading_ease": 31.208733333333385,
+      "flesch_kincaid_grade": 13.046800000000001,
+      "word_count": 250,
+      "sentence_count": 15,
+      "prompt": "What drug preventions are there for Alzheimer's disease? Explain this in simple, everyday language for non-experts. Avoid technical terms and jargon, unless it is central to understanding the topic.",
+      "output": "**What the research found:**\n\nCurrent research shows there are no approved drugs that effectively prevent Alzheimer's disease. Studies tested various medications in the past but found they didn\u2019t work. However, some promising areas are being explored, like diets rich in certain foods (like the Mediterranean or MIND diets) and natural antioxidants. These approaches may reduce risk but aren\u2019t yet proven as drugs. Researchers also note that improving how people are recruited for trials could help test new treatments more effectively.\n\n**Why it matters:**\n\nAlzheimer's is a major health challenge, and preventing it could improve quality of life and reduce healthcare costs. While drugs aren\u2019t available yet, understanding what might help (like diet or antioxidants) could lead to future treatments. This research highlights the need for better methods to test potential preventions and more studies to confirm if lifestyle changes or natural compounds can make a difference.\n\n**The science behind it:**\n\nAlzheimer's is linked to brain changes like protein buildup and oxidative stress (damage from harmful chemicals). Some studies suggest that diets high in fruits, vegetables, and healthy fats (like the Mediterranean diet) might lower risk by reducing inflammation and supporting brain health. Antioxidants in foods or supplements could help protect brain cells from damage. However, these are not yet approved as drugs, and more research is needed to prove their effectiveness.\n\n**Sources:**\n- Recruitment methods for united states Alzheimer disease prevention trials, https://pmc.ncbi.nlm.nih.gov/articles/PMC12878103\n- Prevention of Alzheimer's disease through diet: An exploratory review, https://pmc.ncbi.nlm.nih.gov/articles/PMC10539673\n- Naturally Occurring Antioxidant Therapy in Alzheimer\u2019s Disease, https://pmc.ncbi.nlm.nih.gov/articles/PMC8868221"
+    },
+    {
+      "prompt_label": "very_simple",
+      "status": "ok",
+      "flesch_reading_ease": 34.50255493482311,
+      "flesch_kincaid_grade": 11.411486033519555,
+      "word_count": 179,
+      "sentence_count": 15,
+      "prompt": "What drug preventions are there for Alzheimer's disease? Use short sentences, common words, and avoid medical jargon. A middle school reading level is ideal. Explain any necessary technical terms in simple language.",
+      "output": "**What the research found:**\n\nThere are no drugs that clearly prevent Alzheimer's disease yet. Some studies suggest that natural antioxidants, like those in fruits and vegetables, might help slow brain damage. However, these ideas are still being tested. Diet changes, like eating more Mediterranean foods, also seem to lower risk, but they are not drugs.\n\n**Why it matters:**\n\nFinding ways to prevent Alzheimer's could help millions of people. If drugs or lifestyle changes work, they could stop memory loss and improve quality of life. But more research is needed to prove what really works.\n\n**The science behind it:**\n\nAlzheimer's is linked to harmful chemicals in the brain called free radicals. Antioxidants fight these chemicals. Some studies show that natural antioxidants, like vitamins or plant compounds, might protect brain cells. However, these ideas are still being tested in people. Diet changes may also help by reducing harmful substances in the body.\n\n**Sources:**\n- Recruitment methods for united states Alzheimer disease prevention trials, https://pmc.ncbi.nlm.nih.gov/articles/PMC12878103\n- Prevention of Alzheimer's disease through diet: An exploratory review, https://pmc.ncbi.nlm.nih.gov/articles/PMC10539673\n- Naturally Occurring Antioxidant Therapy in Alzheimer\u2019s Disease, https://pmc.ncbi.nlm.nih.gov/articles/PMC8868221"
+    }
+  ]
+}

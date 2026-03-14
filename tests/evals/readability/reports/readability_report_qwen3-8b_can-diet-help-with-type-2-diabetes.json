@@ -1,0 +1,39 @@
+{
+  "generated_at": "2026-03-13T20:54:46.022450+00:00",
+  "model": "qwen3:8b",
+  "question": "Can diet help with type 2 diabetes?",
+  "pmc_query": "Can diet help with type 2 diabetes?",
+  "pmc_results": 3,
+  "results": [
+    {
+      "prompt_label": "baseline",
+      "status": "ok",
+      "flesch_reading_ease": 4.56202296819788,
+      "flesch_kincaid_grade": 17.644808177688038,
+      "word_count": 283,
+      "sentence_count": 14,
+      "prompt": "Can diet help with type 2 diabetes?",
+      "output": "**What the research found:**\n\nStudies suggest that diet can help manage type 2 diabetes. A low-carbohydrate diet combined with exercise in hypoxia (low oxygen conditions) may improve blood sugar control and heart health (Kindlovits et al., https://pmc.ncbi.nlm.nih.gov/articles/PMC10924702). People with type 2 diabetes also tend to choose lower-carb and lower-calorie meals at home using diet apps, showing a preference for such options (Tominaga et al., https://pmc.ncbi.nlm.nih.gov/articles/PMC9610133). Additionally, increasing plant-based protein intake (like from legumes or nuts) was linked to a lower risk of developing type 2 diabetes in heart patients (de la Cruz-Ares et al., https://pmc.ncbi.nlm.nih.gov/articles/PMC8067822).\n\n**Why it matters:**\n\nThese findings highlight that dietary changes can be a powerful tool for managing or preventing type 2 diabetes. Tailoring diets to individual preferences (like low-carb options) may improve long-term adherence, while plant-based proteins offer a preventive strategy. Combining diet with physical activity, such as hypoxia training, could provide added benefits for blood sugar and heart health.\n\n**The science behind it:**\n\nLow-carb diets reduce blood sugar spikes by limiting carbohydrates, which are broken down into glucose. Hypoxia exercise may enhance glucose tolerance by boosting oxygen use and muscle efficiency. Plant proteins improve metabolic markers by replacing unhealthy fats and increasing fiber. These approaches work by reducing insulin resistance, lowering inflammation, and supporting healthier weight management.\n\n**Sources:**\n- Combined low-carbohydrate diet and long-term exercise in hypoxia in type 2 diabetes: A randomized controlled trial protocol to assess glycemic control, cardiovascular risk factors and body composition, https://pmc.ncbi.nlm.nih.gov/articles/PMC10924702\n- Individuals with Type 2 Diabetes Mellitus Tend to Select Low-Carbohydrate, Low-Calorie Food Menus at Home on Diet Application, https://pmc.ncbi.nlm.nih.gov/articles/PMC9610133\n- Quality and Quantity of Protein Intake Influence Incidence of Type 2 Diabetes Mellitus in Coronary Heart Disease Patients: From the CORDIOPREV Study, https://pmc.ncbi.nlm.nih.gov/articles/PMC8067822"
+    },
+    {
+      "prompt_label": "plain_language",
+      "status": "ok",
+      "flesch_reading_ease": 21.86714285714291,
+      "flesch_kincaid_grade": 15.177857142857146,
+      "word_count": 280,
+      "sentence_count": 14,
+      "prompt": "Can diet help with type 2 diabetes? Explain this in simple, everyday language for non-experts. Avoid technical terms and jargon, unless it is central to understanding the topic.",
+      "output": "**What the research found:**\n\nStudies suggest that certain diets can help manage type 2 diabetes. One study found that combining a low-carbohydrate diet with exercise in low-oxygen environments (like high altitudes) may improve blood sugar control and heart health. Another study showed people with type 2 diabetes often choose meals that are lower in carbs and calories at home. A third study linked eating more plant-based proteins (like beans or lentils) to a lower risk of developing type 2 diabetes, especially in people with heart disease.\n\n**Why it matters:**\n\nThese findings highlight that diet plays a key role in managing and preventing type 2 diabetes. Simple changes, like eating fewer carbs or more plant-based proteins, could help people control blood sugar and reduce diabetes risks. Understanding what people naturally choose (like low-carb meals) can also help doctors create better, personalized care plans.\n\n**The science behind it:**\n\nLow-carb diets help by reducing blood sugar spikes because carbs are broken down into sugar. Plant proteins may improve insulin sensitivity, helping the body use sugar more effectively. Exercise in low oxygen (hypoxia) may boost the body\u2019s ability to use glucose by increasing certain proteins that regulate blood sugar. These approaches work together to support healthier blood sugar levels and reduce diabetes complications.\n\n**Sources:**\n- Combined low-carbohydrate diet and long-term exercise in hypoxia in type 2 diabetes: A randomized controlled trial protocol to assess glycemic control, cardiovascular risk factors and body composition, https://pmc.ncbi.nlm.nih.gov/articles/PMC10924702\n- Individuals with Type 2 Diabetes Mellitus Tend to Select Low-Carbohydrate, Low-Calorie Food Menus at Home on Diet Application, https://pmc.ncbi.nlm.nih.gov/articles/PMC9610133\n- Quality and Quantity of Protein Intake Influence Incidence of Type 2 Diabetes Mellitus in Coronary Heart Disease Patients: From the CORDIOPREV Study, https://pmc.ncbi.nlm.nih.gov/articles/PMC8067822"
+    },
+    {
+      "prompt_label": "very_simple",
+      "status": "ok",
+      "flesch_reading_ease": 27.467727272727302,
+      "flesch_kincaid_grade": 14.112770562770567,
+      "word_count": 264,
+      "sentence_count": 14,
+      "prompt": "Can diet help with type 2 diabetes? Use short sentences, common words, and avoid medical jargon. A middle school reading level is ideal. Explain any necessary technical terms in simple language.",
+      "output": "**What the research found:**\n\nDiets low in carbohydrates and high in healthy fats may help control blood sugar in people with type 2 diabetes. Combining this diet with exercise in low-oxygen conditions (like high altitudes) might improve heart health and blood sugar levels. People with diabetes also tend to choose meals that are lower in carbs and calories at home. Eating more plant-based proteins, like beans or lentils, may lower the risk of developing type 2 diabetes, especially for those with heart disease.\n\n**Why it matters:**\n\nThese findings show that diet can be a powerful tool to manage or prevent type 2 diabetes. Simple changes, like eating fewer carbs or more plant-based proteins, could help people feel better and reduce health risks. Understanding what people naturally choose to eat can also help doctors create better care plans.\n\n**The science behind it:**\n\nLow-carb diets reduce blood sugar by limiting foods that spike glucose. Exercise in low oxygen (hypoxia) may improve how the body uses glucose and protects the heart. Plant proteins may help by reducing inflammation and improving insulin sensitivity. These effects work together to support healthier blood sugar levels and lower diabetes risk.\n\n**Sources:**\n- Combined low-carbohydrate diet and long-term exercise in hypoxia in type 2 diabetes: A randomized controlled trial protocol to assess glycemic control, cardiovascular risk factors and body composition, https://pmc.ncbi.nlm.nih.gov/articles/PMC10924702\n- Individuals with Type 2 Diabetes Mellitus Tend to Select Low-Carbohydrate, Low-Calorie Food Menus at Home on Diet Application, https://pmc.ncbi.nlm.nih.gov/articles/PMC9610133\n- Quality and Quantity of Protein Intake Influence Incidence of Type 2 Diabetes Mellitus in Coronary Heart Disease Patients: From the CORDIOPREV Study, https://pmc.ncbi.nlm.nih.gov/articles/PMC8067822"
+    }
+  ]
+}

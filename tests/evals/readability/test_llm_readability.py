@@ -14,9 +14,14 @@ from tests.evals.readability.readability import ReadabilityCalculator
 
 pytestmark = pytest.mark.asyncio
 
-
+# update as needed to point to the correct model for testing
 def _model_name() -> str:
-    return os.getenv("OLLAMA_MODEL", "gpt-oss:20b")
+    models = {
+        "gpt": "gpt-oss:20b",
+        "qwen": "qwen3:8b",
+        "granite": "granite3.3:2b",
+    }
+    return models.get('qwen')
 
 
 def _report_dir() -> Path:
@@ -32,6 +37,7 @@ def _prompt_variants() -> list[tuple[str, list[tuple[str, str]]]]:
         "Can diet help with type 2 diabetes?",
         "Does smoking prevent Parkinson's disease?",
         "What drug preventions are there for Alzheimer's disease?",
+        "What treatments can improve tinnitus symptoms?"
     ]
     return [
         (
@@ -43,7 +49,7 @@ def _prompt_variants() -> list[tuple[str, list[tuple[str, str]]]]:
                 ),
                 (
                     "plain_language",
-                    f"{question} Explain this in simple, everyday language for non-experts. Avoid technical terms and jargon.",
+                    f"{question} Explain this in simple, everyday language for non-experts. Avoid technical terms and jargon, unless it is central to understanding the topic.",
                 ),
                 (
                     "very_simple",
@@ -169,10 +175,11 @@ async def test_live_llm_readability_report():
         }
 
         question_slug = slugify.slugify(question)
+        model_slug = slugify.slugify(_model_name())
 
-        report_path = reports_dir / f"readability_report_{question_slug}.json"
+        report_path = reports_dir / f"readability_report_{model_slug}_{question_slug}.json"
         report_path.write_text(json.dumps(report_payload, indent=2), encoding="utf-8")
 
-        review_txt_path = review_dir / f"readability_review_{question_slug}.txt"
+        review_txt_path = review_dir / f"readability_review_{model_slug}_{question_slug}.txt"
         review_text = _build_review_text(report_payload)
         review_txt_path.write_text(review_text, encoding="utf-8")

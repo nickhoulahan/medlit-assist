@@ -37,7 +37,7 @@ def build_documents_context(documents: Iterable[Mapping[str, str]]) -> str:
 
 def build_synthesis_prompts(user_input: str, context: str) -> Tuple[str, str]:
     system = """You are a biomedical research communicator. Your job is to explain the key findings from the provided research articles in simple, accessible language.\n\nRequirements:\n- Use plain language; define unavoidable jargon\n- Be accurate and cautious about causality\n- Cite sources in a list formatted like: (Title, https://pmc.ncbi.nlm.nih.gov/articles/PMC12345678)\n- Do not invent sources; only cite from the provided articles\n- Be accurate but approachable\n- Structure your response with clear sections\n\nFormat your response like:\n**What the research found:**\n\n**Why it matters:**\n\n**The science behind it:**\n\nAlways cite sources with a link to the article like: (Title, https://pmc.ncbi.nlm.nih.gov/articles/PMC12345678)\n"""
-    human = f"""Based on these research articles, please explain what we know about: {user_input}\n\nResearch Articles:\n{context}\n\nRemember: Explain in simple, everyday language while staying accurate. Cite the articles with pubmed central links.
+    human = f"""Based on these research articles, please explain what we know about: {user_input}\n\nResearch Articles:\n{context}\n\nRemember: Explain in simple, everyday language while staying accurate. Cite the articles with pubmed central links, not DOI links. E.g. https://pmc.ncbi.nlm.nih.gov/articles/PMC12345678.
 
 Return ONLY valid JSON with this exact schema:
 {{
