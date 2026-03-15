@@ -1,0 +1,8 @@
+{
+    "model": "ibm-granite/granite-4.0-1b-speech",
+    "wer": 1.7272727272727273,
+    "cer": 0.859375,
+    "mer": 1.0,
+    "wil": 1.0,
+    "wip": 0.0
+}
