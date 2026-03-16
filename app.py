@@ -1,4 +1,5 @@
 import tempfile
+import re
 import wave
 
 import chainlit as cl
@@ -8,21 +9,45 @@ from langchain_core.messages import AIMessage, HumanMessage
 from src.asr.asr_model import ASRModel
 from src.medlit_agent.agent.agent import OllamaAgent
 from src.medlit_agent.tools.tools import tools
+from src.tts.tts_model import TTSModel
+
+
+def _clean_text_for_tts(text: str) -> str:
+    """Make markdown-heavy responses sound natural for TTS."""
+    cleaned = text
+    cleaned = re.sub(r"```[\s\S]*?```", " ", cleaned)
+    cleaned = re.sub(r"\[([^\]]+)\]\(([^)]+)\)", r"\1", cleaned)
+    cleaned = re.sub(r"(?m)^\s{0,3}(?:#{1,6}\s*|>\s*|[-*+]\s+|\d+\.\s+)", "", cleaned)
+    cleaned = re.sub(r":[a-zA-Z0-9_+\-]+:", " ", cleaned)
+    cleaned = cleaned.translate(str.maketrans("", "", "*_~`"))
+    cleaned = cleaned.translate(
+        str.maketrans("", "", "🔎🔍📚📖🧪🩺✅❌✨➡️→•▪︎◦★☆")
+    )
+    cleaned = re.sub(r"\s+", " ", cleaned).strip()
+    return cleaned
 
 
 @cl.on_chat_start
 async def start():
     agent = OllamaAgent(model="qwen3:8b", tools=tools, temperature=0.0)
     asr_model = ASRModel(model_name="openai/whisper-large-v3")
+    tts_model = TTSModel()
 
     cl.user_session.set("agent", agent)
     cl.user_session.set("asr_model", asr_model)
+    cl.user_session.set("tts_model", tts_model)
     cl.user_session.set("chat_history", [])
     settings = await cl.ChatSettings(
         [Switch(id="TTS_enabled", label="Enable Spoken Response", initial=False)]
     ).send()
 
     cl.user_session.set("TTS_enabled", settings["TTS_enabled"])
+
+
+@cl.on_settings_update
+async def on_settings_update(settings: dict):
+    tts_enabled = bool(settings.get("TTS_enabled", False))
+    cl.user_session.set("TTS_enabled", tts_enabled)
 
 
 async def _handle_user_text_input(user_text: str) -> None:
@@ -41,9 +66,43 @@ async def _handle_user_text_input(user_text: str) -> None:
 
     await msg.update()
 
+    await _send_tts_audio_if_enabled(full_response)
+
     chat_history.append(HumanMessage(content=user_text))
     chat_history.append(AIMessage(content=full_response))
     cl.user_session.set("chat_history", chat_history)
+
+
+async def _send_tts_audio_if_enabled(response_text: str) -> None:
+    if not response_text or not response_text.strip():
+        return
+
+    tts_enabled = cl.user_session.get("TTS_enabled", False)
+    if not tts_enabled:
+        return
+
+    tts_model = cl.user_session.get("tts_model")
+    if tts_model is None:
+        await cl.Message(
+            content="TTS model is not initialized. Please refresh the chat."
+        ).send()
+        return
+
+    try:
+        tts_text = _clean_text_for_tts(response_text)
+        if not tts_text:
+            return
+
+        wav_bytes, _ = tts_model.synthesize_speech_wav_bytes(tts_text)
+        audio = cl.Audio(
+            content=wav_bytes,
+            name="medlit-response.wav",
+            mime="audio/wav",
+            auto_play=True,
+        )
+        await cl.Message(content="Spoken response", elements=[audio]).send()
+    except Exception as exc:
+        await cl.Message(content=f"TTS error: {exc}").send()
 
 
 @cl.on_audio_start
