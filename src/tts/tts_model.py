@@ -6,11 +6,9 @@ from piper import PiperVoice
 
 
 class TTSModel:
-    def __init__(self, model_path: Path | str | None = None) -> None:
+    def __init__(self) -> None:
         repo_root = Path(__file__).resolve().parents[2]
-        default_model = repo_root / "src/tts/assets/en_US-kathleen-low.onnx"
-
-        self.model_path = Path(model_path) if model_path is not None else default_model
+        self.model_path = repo_root / "src/tts/assets/en_US-kathleen-low.onnx"
         self.voice: PiperVoice = PiperVoice.load(str(self.model_path))
 
     def synthesize_speech_wav_bytes(self, text: str) -> tuple[bytes, int]:
