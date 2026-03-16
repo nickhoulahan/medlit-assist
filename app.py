@@ -1,6 +1,8 @@
-import chainlit as cl
 import tempfile
 import wave
+
+import chainlit as cl
+from chainlit.input_widget import Switch
 from langchain_core.messages import AIMessage, HumanMessage
 
 from src.asr.asr_model import ASRModel
@@ -16,6 +18,11 @@ async def start():
     cl.user_session.set("agent", agent)
     cl.user_session.set("asr_model", asr_model)
     cl.user_session.set("chat_history", [])
+    settings = await cl.ChatSettings(
+        [Switch(id="TTS_enabled", label="Enable Spoken Response", initial=False)]
+    ).send()
+
+    cl.user_session.set("TTS_enabled", settings["TTS_enabled"])
 
 
 async def _handle_user_text_input(user_text: str) -> None:
@@ -85,7 +92,9 @@ async def on_audio_end():
             asr_model = cl.user_session.get("asr_model")
             # catch if asr model is not initialized
             if asr_model is None:
-                await cl.Message(content="ASR model is not initialized. Please refresh the chat.").send()
+                await cl.Message(
+                    content="ASR model is not initialized. Please refresh the chat."
+                ).send()
                 return
 
             transcript = asr_model.generate_text_response(
@@ -110,6 +119,7 @@ async def on_audio_end():
     # echo transcript back as a user messsage, then use as input to agent
     await cl.Message(content=transcript, author="You", type="user_message").send()
     await _handle_user_text_input(transcript)
+
 
 @cl.on_message
 async def main(message: cl.Message):
