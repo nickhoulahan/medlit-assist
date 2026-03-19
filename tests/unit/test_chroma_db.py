@@ -1,6 +1,5 @@
 import sys
-import types
-from pathlib import Path
+from types import SimpleNamespace
 from unittest.mock import MagicMock, patch
 
 from src.medlit_agent.pmc_service.chroma_db import ChromaDB
@@ -17,7 +16,7 @@ def test_init_uses_persist_directory(tmp_path):
             created["collection_name"] = name
             return MagicMock()
 
-    fake_module = types.SimpleNamespace(PersistentClient=FakeClient)
+    fake_module = SimpleNamespace(PersistentClient=FakeClient)
 
     with patch.dict(sys.modules, {"chromadb": fake_module}):
         ChromaDB(collection_name="unit_test_collection", persist_directory=tmp_path)

@@ -25,7 +25,7 @@ def test_asr_transcription_matches_fixture_text() -> None:
 
         expected_text = expected_text_path.read_text(encoding="utf-8").strip()
 
-        # Validate we can read the wav resource as part of the integration test.
+        # validate we can read the wav resource as part of the integration test.
         with wave.open(str(wav_path), "rb") as wav_file:
             assert wav_file.getnframes() > 0
             assert wav_file.getframerate() > 0
@@ -35,5 +35,5 @@ def test_asr_transcription_matches_fixture_text() -> None:
             generate_kwargs={"language": "en", "task": "transcribe"},
         )
 
-        # text needs to be normalized due to common
+        # text needs to be normalized due to incidental differences in punctuation/casing
         assert _normalize_text(text_response) == _normalize_text(expected_text)

@@ -1,5 +1,3 @@
-from lxml import etree
-
 from src.medlit_agent.pmc_service.pmc_endpoint import PMCEndpoint
 from src.medlit_agent.pmc_service.xml_to_dict import XMLToDictConverter
 

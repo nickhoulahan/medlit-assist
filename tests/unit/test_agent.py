@@ -146,7 +146,7 @@ class TestOllamaAgent:
         agent.llm_with_tools = mock_llm
         agent.llm = mock_llm
 
-        # Mock the response with tool calls
+        # mock the response with tool calls
         mock_response = MagicMock()
         mock_response.tool_calls = [
             {
@@ -173,14 +173,11 @@ class TestOllamaAgent:
         async for chunk in agent.astream("search for diabetes"):
             chunks.append(chunk)
 
-        # Verify tool was called
         mock_tool.invoke.assert_called_once()
 
-        # Verify documents were stored
         assert len(agent.documents) == 1
         assert agent.documents[0]["pmcid"] == "PMC123456"
 
-        # Verify output contains expected elements
         full_output = "".join(chunks)
         assert "Searching PubMed Central" in full_output
         assert "What the research found" in full_output
@@ -198,7 +195,7 @@ class TestOllamaAgent:
         agent.llm_with_tools = mock_llm
         agent.llm = mock_llm
 
-        # Pre-populate documents
+        # pre-populate documents
         agent.documents = [
             {
                 "pmcid": "PMC123456",
@@ -303,7 +300,6 @@ class TestOllamaAgent:
 
         agent = OllamaAgent(model="gpt-oss:20b", tools=[mock_tool])
 
-        # Should still initialize without error
         assert agent.llm_with_tools is not None
 
     @patch("src.medlit_agent.agent.agent.ChatOllama")

@@ -18,7 +18,7 @@ def test_live_pmc_endpoint_fetch_pmcids():
     assert isinstance(results, list)
     assert len(results) == 5
     assert all(isinstance(pmcid, str) for pmcid in results)
-    # Endpoint returns number part of PMCIDs, so we can check that they are digits, e.g. "PMC123456" vs "123456"
+    # endpoint returns number part of PMCIDs, so we can check that they are digits, e.g. "PMC123456" vs "123456"
     assert all(pmcid.isdigit() for pmcid in results)
 
 

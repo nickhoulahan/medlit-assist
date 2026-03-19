@@ -213,7 +213,6 @@ async def test_structured_synthesis_streams_in_multiple_chunks(mock_ollama):
     async for chunk in agent.astream("What does research say about diabetes?"):
         output_chunks.append(chunk)
 
-    # Two status messages are emitted before synthesis; ensure synthesis itself is chunked too.
     assert len(output_chunks) > 3
 
 
@@ -253,5 +252,4 @@ async def test_structured_qa_streams_in_multiple_chunks(mock_ollama):
     async for chunk in agent.astream("Does it help?"):
         output_chunks.append(chunk)
 
-    # QA path has no status preamble, so >1 confirms chunked streaming behavior.
     assert len(output_chunks) > 1
