@@ -16,14 +16,15 @@ def _clean_text_for_tts(text: str) -> str:
     """Make markdown-heavy responses sound natural for TTS."""
     cleaned = text
     cleaned = re.sub(r"```[\s\S]*?```", " ", cleaned)
-    cleaned = re.sub(r"\[([^\]]+)\]\(([^)]+)\)", r"\1", cleaned)
-    cleaned = re.sub(r"(?m)^\s{0,3}(?:#{1,6}\s*|>\s*|[-*+]\s+|\d+\.\s+)", "", cleaned)
-    cleaned = re.sub(r":[a-zA-Z0-9_+\-]+:", " ", cleaned)
-    cleaned = cleaned.translate(str.maketrans("", "", "*_~`"))
+    cleaned = re.sub(r"https?://\S+", " ", cleaned) # remove URLs
+    cleaned = re.sub(r"\[([^\]]+)\]\(([^)]+)\)", r"\1", cleaned) # markdown links
+    cleaned = re.sub(r"(?m)^\s{0,3}(?:#{1,6}\s*|>\s*|[-*+]\s+|\d+\.\s+)", "", cleaned) # markdown syntax
+    cleaned = re.sub(r":[a-zA-Z0-9_+\-]+:", " ", cleaned) # emojis like :smile:
+    cleaned = cleaned.translate(str.maketrans("", "", "*_~`")) # markdown chars
     cleaned = cleaned.translate(
-        str.maketrans("", "", "📄😊💡🔎🔍📚📖🧪🩺✅❌✨➡️→•▪︎◦★☆")
+        str.maketrans("", "", "📄😊💡🔎🔍📚📖🧪🩺✅❌✨➡️→•▪︎◦★☆") # particular emojis
     )
-    cleaned = re.sub(r"\s+", " ", cleaned).strip()
+    cleaned = re.sub(r"\s+", " ", cleaned).strip() # collapse whitespace
     return cleaned
 
 

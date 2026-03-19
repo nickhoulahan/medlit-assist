@@ -17,13 +17,18 @@ class FullTextRetriever:
         self.endpoint = PMCEndpoint()
         self.db = ChromaDB()
 
-    def retrieve_full_text(self, pmid: str) -> List[Dict[str, str]]:
+    def retrieve_full_text(self, pmid: str, n_results: int = 5) -> List[Dict[str, str]]:
         """
-        Retrieve full text sections for a given PMID
+        Retrieve top sections for a given PMID from ChromaDB.
+        If the document is not cached, fetch, chunk, embed/store, then return cached sections.
         """
+        if self.db.document_exists(pmid):
+            return self.db.get_sections_by_pmcid(pmid, limit=n_results)
+
         xml_content = PMCEndpoint.fetch_pmcid_xml(pmid)
         sections = self.converter.convert(xml_content)
-        return sections
+        self.store_full_text(pmid, sections)
+        return self.db.get_sections_by_pmcid(pmid, limit=n_results)
 
     def store_full_text(self, pmid: str, sections: List[Dict[str, str]]):
         """
@@ -41,6 +46,7 @@ class FullTextRetriever:
 
 
 if __name__ == "__main__":
+    # testing storeage and retrieval
     retriever = FullTextRetriever()
     pmid = "PMC6659366"
     sections = retriever.retrieve_full_text(pmid)

@@ -64,26 +64,39 @@ class ChromaDB:
         )
 
     def query(
-        self, query_embedding: List[float], n_results: int
+        self, query_embedding: List[float], n_results: int, pmcid: str | None = None
     ) -> List[Dict[str, str]]:
+        query_kwargs = {
+            "query_embeddings": [query_embedding],
+            "n_results": n_results,
+            "include": ["metadatas"],
+        }
+        if pmcid:
+            query_kwargs["where"] = {"pmcid": pmcid}
+
         results = self.collection.query(
-            query_embeddings=[query_embedding],
-            n_results=n_results,
-            include=["metadatas"],
+            **query_kwargs,
         )
         metadatas = results.get("metadatas", [])
         if not metadatas:
             return []
         return metadatas[0]
 
-    def _document_exists(self, pmcid: str) -> bool:
-        # Check if any document with the given PMCID exists in the collection
-        results = self.collection.query(
-            query_embeddings=[[0] * 384],  # Dummy embedding for existence check
-            n_results=1,
-            include=["metadatas"],
-        )
-        for metadata in results["metadatas"]:
-            if metadata.get("pmcid") == pmcid:
-                return True
-        return False
+    def document_exists(self, pmcid: str) -> bool:
+        """Return True when at least one chunk exists for the PMCID."""
+        results = self.collection.get(where={"pmcid": pmcid}, limit=1)
+        return bool(results.get("ids"))
+
+    def get_sections_by_pmcid(self, pmcid: str, limit: int = 5) -> List[Dict[str, str]]:
+        """Return up to `limit` stored chunks for a PMCID as section-like dicts."""
+        results = self.collection.get(where={"pmcid": pmcid}, limit=limit)
+        metadatas = results.get("metadatas", [])
+        sections: List[Dict[str, str]] = []
+        for metadata in metadatas:
+            sections.append(
+                {
+                    "title": metadata.get("title", "Untitled Section"),
+                    "body": metadata.get("text", ""),
+                }
+            )
+        return sections

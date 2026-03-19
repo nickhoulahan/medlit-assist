@@ -39,7 +39,7 @@ def search_pubmed_central(query: str, max_results: int = 3) -> List[Dict[str, st
 
 @tool
 def retrieve_full_text(pmcid: str) -> List[Dict[str, str]]:
-    """Retrieve full text sections for a given PMC ID.
+    """Retrieve full text sections for a given PMC ID to answer questions on article-spefic user queries.
     Args:
         pmcid: The PMC ID of the article (e.g., "PMC1013555")
         Returns: List of full text sections with title and body
