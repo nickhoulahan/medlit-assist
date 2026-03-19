@@ -2,33 +2,59 @@ import wave
 from io import BytesIO
 from pathlib import Path
 
-from piper import PiperVoice
+import numpy as np
+from kokoro import KPipeline
 
 
 class TTSModel:
-    def __init__(self) -> None:
-        repo_root = Path(__file__).resolve().parents[2]
-        self.model_path = repo_root / "src/tts/assets/en_US-kathleen-low.onnx"
-        self.voice: PiperVoice = PiperVoice.load(str(self.model_path))
+    """
+    Text-to-speech model using Kokoro TTS.
+    methods to interpret audio credit to cookbook https://github.com/Chainlit/cookbook/blob/main/openai-whisper/app.py
+    """
+
+    def __init__(
+        self,
+        voice: str = "af_heart",
+        lang_code: str = "a",
+        sample_rate: int = 24000,
+    ) -> None:
+        self.voice = voice
+        self.sample_rate = sample_rate
+        self.pipeline = KPipeline(lang_code=lang_code)
 
     def synthesize_speech_wav_bytes(self, text: str) -> tuple[bytes, int]:
-        """Generate WAV bytes and sample rate from input text using Piper."""
+        """Generate WAV bytes and sample rate from input text."""
         if not text or not text.strip():
             raise ValueError("text must be a non-empty string")
 
-        buffer = BytesIO()
+        chunks = []
+        for _, _, audio in self.pipeline(text, voice=self.voice):
+            chunks.append(np.asarray(audio, dtype=np.float32))
 
-        with wave.open(buffer, "wb") as wav_file:
-            self.voice.synthesize_wav(text, wav_file)
+        if not chunks:
+            raise RuntimeError("Kokoro did not generate any audio")
 
-        wav_bytes = buffer.getvalue()
-        with wave.open(BytesIO(wav_bytes), "rb") as wav_reader:
-            sr = int(wav_reader.getframerate())
-
-        return wav_bytes, sr
+        full_audio = np.concatenate(chunks)
+        wav_bytes = self._pcm_f32_to_wav_bytes(full_audio, self.sample_rate)
+        return wav_bytes, self.sample_rate
 
     def synthesize_to_wav_file(self, text: str, output_path: Path) -> Path:
         wav_bytes, _ = self.synthesize_speech_wav_bytes(text)
         output_path.parent.mkdir(parents=True, exist_ok=True)
         output_path.write_bytes(wav_bytes)
         return output_path
+
+    @staticmethod
+    def _pcm_f32_to_wav_bytes(audio: np.ndarray, sample_rate: int) -> bytes:
+        audio = np.asarray(audio, dtype=np.float32)
+        audio = np.clip(audio, -1.0, 1.0)
+        pcm16 = (audio * 32767.0).astype(np.int16)
+
+        buffer = BytesIO()
+        with wave.open(buffer, "wb") as wav_file:
+            wav_file.setnchannels(1)
+            wav_file.setsampwidth(2)
+            wav_file.setframerate(sample_rate)
+            wav_file.writeframes(pcm16.tobytes())
+
+        return buffer.getvalue()
