@@ -14,18 +14,16 @@ def test_synthesize_speech_wav_bytes_rejects_empty_text():
         model.synthesize_speech_wav_bytes("   ")
 
 
-def test_synthesize_speech_wav_bytes_uses_piper_voice(monkeypatch):
+def test_synthesize_speech_wav_bytes_uses_kokoro_pipeline(monkeypatch):
     model = TTSModel()
 
-    class _FakeVoice:
-        def synthesize_wav(self, text, wav_file):
-            assert text == "hello"
-            wav_file.setnchannels(1)
-            wav_file.setsampwidth(2)
-            wav_file.setframerate(22050)
-            wav_file.writeframes(b"\x00\x00" * 8)
+    def _fake_pipeline(text, voice):
+        assert text == "hello"
+        assert voice == model.voice
+        yield "gs", "ps", [0.0, 0.5, -0.5, 0.25]
 
-    monkeypatch.setattr(model, "voice", _FakeVoice())
+    monkeypatch.setattr(model, "pipeline", _fake_pipeline)
+    monkeypatch.setattr(model, "sample_rate", 22050)
 
     wav_bytes, sr = model.synthesize_speech_wav_bytes("hello")
 

@@ -21,7 +21,7 @@ def _clean_text_for_tts(text: str) -> str:
     cleaned = re.sub(r":[a-zA-Z0-9_+\-]+:", " ", cleaned)
     cleaned = cleaned.translate(str.maketrans("", "", "*_~`"))
     cleaned = cleaned.translate(
-        str.maketrans("", "", "🔎🔍📚📖🧪🩺✅❌✨➡️→•▪︎◦★☆")
+        str.maketrans("", "", "📄😊💡🔎🔍📚📖🧪🩺✅❌✨➡️→•▪︎◦★☆")
     )
     cleaned = re.sub(r"\s+", " ", cleaned).strip()
     return cleaned

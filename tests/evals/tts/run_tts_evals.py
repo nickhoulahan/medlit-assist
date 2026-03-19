@@ -69,6 +69,7 @@ if __name__ == "__main__":
         "facebook": "facebook/mms-tts-eng",
         "piper": "piper-config-en_US-kathleen-low",
         "qwen": "qwen3-tts-12hz-0.6b-base",
+        "kokoro": "hexgrad/Kokoro-82M",
     }
 
     durations = {}
