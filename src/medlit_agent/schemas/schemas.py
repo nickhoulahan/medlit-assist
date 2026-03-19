@@ -63,20 +63,22 @@ class ResearchSynthesis(LLMOutputModel):
         description="List of sources formatted like '(Title, https://pmc...)'",
     )
 
-    def to_markdown(self) -> str:
-        sources_block = "\n".join(f"- {source}" for source in self.sources)
-        if not sources_block:
-            sources_block = "- No source links were provided."
-        return (
+    def to_markdown(self, include_sources: bool = True) -> str:
+        base = (
             "**What the research found:**\n\n"
             f"{self.what_the_research_found}\n\n"
             "**Why it matters:**\n\n"
             f"{self.why_it_matters}\n\n"
             "**The science behind it:**\n\n"
-            f"{self.the_science_behind_it}\n\n"
-            "**Sources:**\n"
-            f"{sources_block}"
+            f"{self.the_science_behind_it}"
         )
+        if not include_sources:
+            return base
+
+        sources_block = "\n".join(f"- {source}" for source in self.sources)
+        if not sources_block:
+            sources_block = "- No source links were provided."
+        return f"{base}\n\n**Sources:**\n{sources_block}"
 
 
 class ArticleQAAnswer(LLMOutputModel):
