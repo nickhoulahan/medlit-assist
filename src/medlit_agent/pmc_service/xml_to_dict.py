@@ -34,6 +34,14 @@ class XMLToDictConverter:
         except ET.XMLSyntaxError as exc:
             raise ValueError(f"Invalid XML content: {exc}") from exc
 
+    @staticmethod
+    def _localname(node: ET._Element) -> str | None:
+        """Return an element local name, skipping non-element iter nodes."""
+        tag = getattr(node, "tag", None)
+        if not isinstance(tag, str):
+            return None
+        return ET.QName(node).localname
+
     @classmethod
     def _find_body(cls, root: ET._Element) -> ET._Element | None:
         body = root.find(".//body")
@@ -42,7 +50,7 @@ class XMLToDictConverter:
 
         # Namespace-aware fallback for documents that use a default namespace.
         for elem in root.iter():
-            if ET.QName(elem).localname == "body":
+            if cls._localname(elem) == "body":
                 return elem
         return None
 
@@ -65,11 +73,11 @@ class XMLToDictConverter:
         }
 
         for sec in body.iter():
-            if ET.QName(sec).localname != "sec":
+            if cls._localname(sec) != "sec":
                 continue
 
             title_elem = next(
-                (child for child in sec if ET.QName(child).localname == "title"),
+                (child for child in sec if cls._localname(child) == "title"),
                 None,
             )
             if title_elem is None:
@@ -87,7 +95,7 @@ class XMLToDictConverter:
 
             paragraphs: List[str] = []
             for p in sec.iter():
-                if ET.QName(p).localname != "p":
+                if cls._localname(p) != "p":
                     continue
 
                 # Keep only paragraphs that belong to this section directly,
@@ -95,7 +103,7 @@ class XMLToDictConverter:
                 parent = p.getparent()
                 nearest_sec = None
                 while parent is not None:
-                    if ET.QName(parent).localname == "sec":
+                    if cls._localname(parent) == "sec":
                         nearest_sec = parent
                         break
                     parent = parent.getparent()
@@ -134,7 +142,7 @@ def _find_project_root(start: Path) -> Path:
     return start
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     import argparse
     import sys
 

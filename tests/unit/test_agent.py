@@ -1,9 +1,18 @@
+from types import SimpleNamespace
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 from langchain_core.messages import AIMessage, HumanMessage
 
 from src.medlit_agent.agent.agent import OllamaAgent
+
+
+def _stream_chunks(text: str, size: int = 80):
+    async def _gen():
+        for idx in range(0, len(text), size):
+            yield SimpleNamespace(content=text[idx : idx + size])
+
+    return _gen()
 
 
 @pytest.fixture
@@ -155,7 +164,10 @@ class TestOllamaAgent:
         )
         mock_synthesis.tool_calls = []
 
-        mock_llm.ainvoke = AsyncMock(side_effect=[mock_response, mock_synthesis])
+        mock_llm.ainvoke = AsyncMock(return_value=mock_response)
+        mock_llm.astream = MagicMock(
+            return_value=_stream_chunks(mock_synthesis.content)
+        )
 
         chunks = []
         async for chunk in agent.astream("search for diabetes"):
@@ -172,6 +184,8 @@ class TestOllamaAgent:
         full_output = "".join(chunks)
         assert "Searching PubMed Central" in full_output
         assert "What the research found" in full_output
+        assert agent.last_validated_response is not None
+        assert "What the research found" in agent.last_validated_response
 
     @pytest.mark.asyncio
     @patch("src.medlit_agent.agent.agent.ChatOllama")
@@ -204,7 +218,8 @@ class TestOllamaAgent:
         )
         mock_qa.tool_calls = []
 
-        mock_llm.ainvoke = AsyncMock(side_effect=[mock_response, mock_qa])
+        mock_llm.ainvoke = AsyncMock(return_value=mock_response)
+        mock_llm.astream = MagicMock(return_value=_stream_chunks(mock_qa.content))
 
         chunks = []
         async for chunk in agent.astream("What did the research find?"):
@@ -212,7 +227,48 @@ class TestOllamaAgent:
 
         full_output = "".join(chunks)
         assert "Answer based on articles" in full_output
-        assert "Citations" in full_output
+        assert "Answer" in full_output
+        assert agent.last_validated_response is not None
+        assert "Citations" in agent.last_validated_response
+
+    @pytest.mark.asyncio
+    @patch("src.medlit_agent.agent.agent.ChatOllama")
+    async def test_astream_full_text_unavailable_returns_friendly_message(
+        self, mock_ollama
+    ):
+
+        mock_llm = MagicMock()
+        mock_ollama.return_value = mock_llm
+
+        mock_tool = MagicMock()
+        mock_tool.name = "retrieve_full_text"
+        mock_tool.description = "Retrieve full text"
+        mock_tool.invoke.side_effect = ValueError(
+            "No <body> element found in XML; cannot extract full text."
+        )
+
+        agent = OllamaAgent(model="gpt-oss:20b", tools=[mock_tool])
+        agent.llm_with_tools = mock_llm
+        agent.llm = mock_llm
+
+        mock_response = MagicMock()
+        mock_response.tool_calls = [
+            {
+                "name": "retrieve_full_text",
+                "args": {"pmcid": "PMC1831666"},
+            }
+        ]
+
+        mock_llm.ainvoke = AsyncMock(return_value=mock_response)
+
+        chunks = []
+        async for chunk in agent.astream("summarize PMC1831666"):
+            chunks.append(chunk)
+
+        full_output = "".join(chunks)
+        assert "publisher does not expose full-text XML" in full_output
+        assert "PMC1831666" in full_output
+        assert "Something went wrong" not in full_output
 
     @pytest.mark.asyncio
     @patch("src.medlit_agent.agent.agent.ChatOllama")

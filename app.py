@@ -13,7 +13,7 @@ from src.tts.tts_model import TTSModel
 
 
 def _clean_text_for_tts(text: str) -> str:
-    """Make markdown-heavy responses sound natural for TTS."""
+    """clean markdown-heavy responses to natural sounding words for TTS."""
     cleaned = text
     cleaned = re.sub(r"```[\s\S]*?```", " ", cleaned)
     cleaned = re.sub(r"https?://\S+", " ", cleaned) # remove URLs
@@ -22,15 +22,32 @@ def _clean_text_for_tts(text: str) -> str:
     cleaned = re.sub(r":[a-zA-Z0-9_+\-]+:", " ", cleaned) # emojis like :smile:
     cleaned = cleaned.translate(str.maketrans("", "", "*_~`")) # markdown chars
     cleaned = cleaned.translate(
-        str.maketrans("", "", "📄😊💡🔎🔍📚📖🧪🩺✅❌✨➡️→•▪︎◦★☆") # particular emojis
+        str.maketrans("", "", "📄😊💡🔎🔍📚📖🧪🩺✅❌") # particular emojis
     )
     cleaned = re.sub(r"\s+", " ", cleaned).strip() # collapse whitespace
     return cleaned
 
 
+def _extract_tool_status_info(streamed_text: str) -> str:
+    """show user tool status lines visible after swapping in validated content."""
+    status_lines = []
+    for line in streamed_text.splitlines():
+        stripped = line.strip()
+        if stripped.startswith(("🔎", "📄", "📚")):
+            status_lines.append(stripped)
+
+    return "\n\n".join(status_lines)
+
+
 @cl.on_chat_start
 async def start():
-    agent = OllamaAgent(model="qwen3:8b", tools=tools, temperature=0.0)
+    agent = OllamaAgent(
+        model="qwen3:8b",
+        tools=tools,
+        temperature=0.0,
+        stream_chunk_size=18,
+        stream_chunk_delay=0.025,
+    )
     asr_model = ASRModel(model_name="openai/whisper-large-v3")
     tts_model = TTSModel()
 
@@ -65,16 +82,33 @@ async def _handle_user_text_input(user_text: str) -> None:
             full_response += chunk
             await msg.stream_token(chunk)
 
+    # after token streaming, replace response with schema-validated markdown when available
+    # this allows a streaming response with after-the-fact schema validation
+    validated_response = getattr(agent, "last_validated_response", None)
+    if validated_response:
+        tool_status_info = _extract_tool_status_info(full_response)
+        follow_up_prompt = ""
+        if "💡 *Any other follow-up questions? Just ask!*" in full_response:
+            follow_up_prompt = "\n\n---\n\n💡 *Any other follow-up questions? Just ask!*"
+
+        combined_parts = []
+        if tool_status_info:
+            combined_parts.append(tool_status_info)
+        combined_parts.append(validated_response)
+
+        full_response = "\n\n".join(combined_parts) + follow_up_prompt
+        msg.content = full_response
+
     await msg.update()
 
-    await _send_tts_audio_if_enabled(full_response)
+    await _send_tts_audio_if_enabled(full_response, msg)
 
     chat_history.append(HumanMessage(content=user_text))
     chat_history.append(AIMessage(content=full_response))
     cl.user_session.set("chat_history", chat_history)
 
 
-async def _send_tts_audio_if_enabled(response_text: str) -> None:
+async def _send_tts_audio_if_enabled(response_text: str, response_message: cl.Message) -> None:
     if not response_text or not response_text.strip():
         return
 
@@ -88,6 +122,10 @@ async def _send_tts_audio_if_enabled(response_text: str) -> None:
             content="TTS model is not initialized. Please refresh the chat."
         ).send()
         return
+    
+    # inform user that spoken response is being generated
+    while_waiting_message = cl.Message(content="Generating spoken response...")
+    await while_waiting_message.send()
 
     try:
         tts_text = _clean_text_for_tts(response_text)
@@ -101,9 +139,18 @@ async def _send_tts_audio_if_enabled(response_text: str) -> None:
             mime="audio/wav",
             auto_play=True,
         )
-        await cl.Message(content="Spoken response", elements=[audio]).send()
-    except Exception as exc:
-        await cl.Message(content=f"TTS error: {exc}").send()
+        # attach audio to the original assistant response to keep copy behavior on full text
+        existing_elements = list(response_message.elements or [])
+        response_message.elements = [*existing_elements, audio]
+        await response_message.update()
+    except Exception as e:
+        await cl.Message(content=f"Spoken response error: please try again later.").send()
+    finally:
+        try:
+            # remove the waiting message
+            await while_waiting_message.remove()
+        except Exception:
+            pass
 
 
 @cl.on_audio_start
@@ -115,7 +162,7 @@ async def on_audio_start():
 
 @cl.on_audio_chunk
 async def on_audio_chunk(chunk: cl.InputAudioChunk):
-    # Collect raw PCM16 bytes from each chunk.
+    # get raw PCM16 bytes from each chunk.
     buffer = cl.user_session.get("audio_buffer")
     if buffer is not None:
         buffer.append(chunk.data)

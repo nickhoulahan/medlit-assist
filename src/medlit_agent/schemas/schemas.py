@@ -16,8 +16,8 @@ class LLMOutputModel(BaseModel):
     @staticmethod
     def _extract_json_payload(payload: str) -> str | None:
         """
-            Extract JSON object from the input string, handling cases where the JSON may be fenced or embedded within other text.
-            This private method guards against an I was noticing where the JSON may be wrapped in additional text or formatting.
+        Extract JSON object from the input string, handling cases where the JSON may be fenced or embedded within other text.
+        This private method guards against an I was noticing where the JSON may be wrapped in additional text or formatting.
         """
         text = payload.strip()
         if not text:
@@ -93,4 +93,3 @@ class ArticleQAAnswer(LLMOutputModel):
         if not citations_block:
             citations_block = "- No citations were provided."
         return f"{self.answer}\n\n**Citations:**\n{citations_block}"
-

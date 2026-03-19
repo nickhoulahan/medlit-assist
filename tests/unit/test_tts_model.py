@@ -1,6 +1,6 @@
-from pathlib import Path
-from io import BytesIO
 import wave
+from io import BytesIO
+from pathlib import Path
 
 import pytest
 
@@ -33,6 +33,7 @@ def test_synthesize_speech_wav_bytes_uses_kokoro_pipeline(monkeypatch):
         assert reader.getnchannels() == 1
         assert reader.getsampwidth() == 2
         assert reader.getframerate() == 22050
+
 
 def test_synthesize_to_wav_file_writes_file(tmp_path: Path, monkeypatch):
     model = TTSModel()

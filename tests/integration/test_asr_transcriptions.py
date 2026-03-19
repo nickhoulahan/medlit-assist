@@ -1,6 +1,6 @@
-from pathlib import Path
 import re
 import wave
+from pathlib import Path
 
 from src.asr.asr_model import ASRModel
 
@@ -14,13 +14,14 @@ def _normalize_text(value: str) -> str:
 def test_asr_transcription_matches_fixture_text() -> None:
 
     model = ASRModel(model_name="openai/whisper-large-v3")
-    
+
     # test normalized model response for each .wav file matches normalized text in corresponding .txt file
-    for  file in (Path(__file__).parent / "testing_resources").glob("*.wav"):
-        
-        
+    for file in (Path(__file__).parent / "testing_resources").glob("*.wav"):
+
         wav_path = file
-        expected_text_path = file.with_name(file.stem.replace("question", "transcription") + ".txt")
+        expected_text_path = file.with_name(
+            file.stem.replace("question", "transcription") + ".txt"
+        )
 
         expected_text = expected_text_path.read_text(encoding="utf-8").strip()
 
@@ -34,5 +35,5 @@ def test_asr_transcription_matches_fixture_text() -> None:
             generate_kwargs={"language": "en", "task": "transcribe"},
         )
 
-        # text needs to be normalized due to common 
+        # text needs to be normalized due to common
         assert _normalize_text(text_response) == _normalize_text(expected_text)
