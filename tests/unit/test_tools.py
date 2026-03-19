@@ -13,7 +13,7 @@ class TestSearchPubmedCentral:
 
     @patch("src.medlit_agent.tools.tools.PMCEndpoint.fetch_pmc_records")
     def test_search_pubmed_central_success(self, mock_fetch):
-        # Mock the PMC endpoint response
+        # mock the PMC endpoint response
         mock_fetch.return_value = [
             {
                 "pmcid": "12345",

@@ -18,33 +18,43 @@ from src.medlit_agent.schemas.schemas import (
 
 class OllamaAgent:
 
-    def __init__(self, model: str, tools: List = None, temperature: float = 0.3):
+    def __init__(
+        self,
+        model: str,
+        tools: List = None,
+        temperature: float = 0.0,
+        stream_chunk_size: int = 24,
+        stream_chunk_delay: float = 0.02,
+    ):
         """
         Ollama agent with tools.
 
         Args:
-            model: The Ollama model to use
-            tools: List of LangChain tools to provide to the agent
-            temperature: Model temperature (0-1)
+            model: the Ollama model id to use
+            tools: list of LangChain tools to provide to the agent
+            temperature: model temperature (0-1), default 0.0
+            stream_chunk_size: characters per streamed chunk for structured outputs
+            stream_chunk_delay: delay (seconds) between streamed chunks
         """
         self.model = model
         self.tools_list = tools or []
         self.tools = {tool.name: tool for tool in self.tools_list}
         self.documents = []  # for storing fetched documents
+        self.stream_chunk_size = max(1, stream_chunk_size)
+        self.stream_chunk_delay = max(0.0, stream_chunk_delay)
+        self.last_validated_response: Optional[str] = None
 
-        # LangChain ChatOllama instance
+        # ChatOllama instance
         self.llm = ChatOllama(
             model=model,
             temperature=temperature,
         )
 
-        # Try to bind tools to the model if supported
-        if self.tools_list:
-            try:
-                self.llm_with_tools = self.llm.bind_tools(self.tools_list)
-            except Exception:
-                self.llm_with_tools = self.llm
-        else:
+        # bind tools to llm
+        try:
+            self.llm_with_tools = self.llm.bind_tools(self.tools_list)
+        except Exception:
+            # fallback to base llm if tool binding fails to keep agent usable
             self.llm_with_tools = self.llm
 
     def _extract_tool_args(
@@ -64,14 +74,98 @@ class OllamaAgent:
     def _run_tool(
         self, tool_name: str, tool_args: Dict[str, Any]
     ) -> List[Dict[str, str]]:
-        """Execute a single tool call and normalize storage for follow-up Q&A."""
+        """executes a single tool call and normalize storage for follow-up Q&A."""
         tool = self.tools[tool_name]
         result = tool.invoke(tool_args)
 
-        # Store documents in memory for follow-up Q&A.
+        # store documents in memory for follow-up Q&A.
         # (Keeping as list[dict] to preserve existing app/tests expectations.)
+        # different from chroma vector DB caching.
         self.documents = result
         return result
+
+    @staticmethod
+    def _is_full_text_unavailable_error(exc: Exception) -> bool:
+        msg = str(exc).casefold()
+        return "no <body> element found" in msg or "cannot extract full text" in msg
+
+    @staticmethod
+    def _build_full_text_unavailable_message(pmcid: str) -> str:
+        pmcid_label = f" for **{pmcid}**" if pmcid else ""
+        return (
+            f"⚠️ **Full text unavailable{pmcid_label}**\n\n"
+            "The publisher does not expose full-text XML for this article in PubMed Central.\n\n"
+            f"View online at this link: https://www.ncbi.nlm.nih.gov/pmc/articles/{pmcid}/\n\n"
+            "**Try another question**\n\n"
+        )
+
+    @staticmethod
+    def _extract_partial_json_string(raw_text: str, key: str) -> str | None:
+        key_pos = raw_text.find(f'"{key}"')
+        if key_pos == -1:
+            return None
+
+        colon_pos = raw_text.find(":", key_pos)
+        if colon_pos == -1:
+            return None
+
+        start_quote = raw_text.find('"', colon_pos)
+        if start_quote == -1:
+            return None
+
+        chars: List[str] = []
+        escaped = False
+        idx = start_quote + 1
+        while idx < len(raw_text):
+            ch = raw_text[idx]
+            if escaped:
+                chars.append("\\" + ch)
+                escaped = False
+                idx += 1
+                continue
+
+            if ch == "\\":
+                escaped = True
+                idx += 1
+                continue
+
+            if ch == '"':
+                break
+
+            chars.append(ch)
+            idx += 1
+
+        return "".join(chars)
+
+    @staticmethod
+    def _unescape_preview(text: str) -> str:
+        return (
+            text.replace("\\n", "\n")
+            .replace("\\t", "\t")
+            .replace('\\"', '"')
+            .replace("\\/", "/")
+        )
+
+    def _build_synthesis_preview(self, raw_text: str) -> str:
+        fields = [
+            ("what_the_research_found", "**What the research found:**"),
+            ("why_it_matters", "**Why it matters:**"),
+            ("the_science_behind_it", "**The science behind it:**"),
+        ]
+
+        blocks: List[str] = []
+        for key, header in fields:
+            value = self._extract_partial_json_string(raw_text, key)
+            if value:
+                blocks.append(f"{header}\n\n{self._unescape_preview(value)}")
+
+        return "\n\n".join(blocks)
+
+    def _build_qa_preview(self, raw_text: str) -> str:
+        answer = self._extract_partial_json_string(raw_text, "answer")
+        if not answer:
+            return ""
+        return f"**Answer:**\n\n{self._unescape_preview(answer)}"
 
     async def _stream_synthesis(
         self,
@@ -80,27 +174,40 @@ class OllamaAgent:
         documents: List[Dict[str, str]],
         include_sources: bool = True,
     ) -> AsyncIterator[str]:
-        synthesis_messages = build_synthesis_messages(user_input, documents)
+        synthesis_messages = build_synthesis_messages(
+            user_input, documents, include_sources=include_sources
+        )
         try:
-            structured_response = await self.llm.ainvoke(synthesis_messages)
-            content = (
-                structured_response.content
-                if hasattr(structured_response, "content")
-                else str(structured_response)
-            )
+            streamed_parts: List[str] = []
+            emitted_preview = ""
+            async for chunk in self.llm.astream(synthesis_messages):
+                token = chunk.content if hasattr(chunk, "content") else str(chunk)
+                if token:
+                    streamed_parts.append(token)
+                    preview = self._build_synthesis_preview("".join(streamed_parts))
+                    if preview.startswith(emitted_preview):
+                        delta = preview[len(emitted_preview) :]
+                    else:
+                        delta = preview
+                    emitted_preview = preview
+                    if delta:
+                        yield delta
+
+            content = "".join(streamed_parts)
             parsed = ResearchSynthesis.from_llm(content)
-            yield parsed.to_markdown(include_sources=include_sources)
-            return
+            self.last_validated_response = parsed.to_markdown(
+                include_sources=include_sources
+            )
         except Exception:
             # Fall back to plain streaming if structured parsing fails.
-            async for chunk in self.llm.astream(synthesis_messages):
-                if hasattr(chunk, "content"):
-                    yield chunk.content
-                else:
-                    yield str(chunk)
+            self.last_validated_response = None
 
     async def _stream_qa(
-        self, *, user_input: str, documents: List[Dict[str, str]], chat_history: Optional[List]
+        self,
+        *,
+        user_input: str,
+        documents: List[Dict[str, str]],
+        chat_history: Optional[List],
     ) -> AsyncIterator[str]:
         qa_messages = build_qa_messages(user_input, documents)
 
@@ -113,22 +220,27 @@ class OllamaAgent:
             ]
 
         try:
-            structured_response = await self.llm.ainvoke(qa_messages)
-            content = (
-                structured_response.content
-                if hasattr(structured_response, "content")
-                else str(structured_response)
-            )
+            streamed_parts: List[str] = []
+            emitted_preview = ""
+            async for chunk in self.llm.astream(qa_messages):
+                token = chunk.content if hasattr(chunk, "content") else str(chunk)
+                if token:
+                    streamed_parts.append(token)
+                    preview = self._build_qa_preview("".join(streamed_parts))
+                    if preview.startswith(emitted_preview):
+                        delta = preview[len(emitted_preview) :]
+                    else:
+                        delta = preview
+                    emitted_preview = preview
+                    if delta:
+                        yield delta
+
+            content = "".join(streamed_parts)
             parsed = ArticleQAAnswer.from_llm(content)
-            yield parsed.to_markdown()
-            return
+            self.last_validated_response = parsed.to_markdown()
         except Exception:
             # Fall back to plain streaming if structured parsing fails.
-            async for chunk in self.llm.astream(qa_messages):
-                if hasattr(chunk, "content"):
-                    yield chunk.content
-                else:
-                    yield str(chunk)
+            self.last_validated_response = None
 
     async def astream(self, user_input: str, chat_history: Optional[List] = None):
         """
@@ -141,6 +253,8 @@ class OllamaAgent:
         Yields:
             Chunks of the response for streaming output
         """
+        self.last_validated_response = None
+
         # Compile tool description for the system prompt
         tool_descriptions = build_tool_descriptions(self.tools)
 
@@ -202,12 +316,20 @@ class OllamaAgent:
                             ):
                                 yield chunk
 
-                            # Offer to answer follow up question for accessibility
+                            # offer to answer follow up question for accessibility
                             yield f"\n\n---\n\n💡 *Any other follow-up questions? Just ask!*"
                         else:
                             yield "No articles found for that query."
                     except Exception as e:
-                        yield f"❌ Error: {str(e)}"
+                        # account for when full text is not available or rights prohibited
+                        if (
+                            tool_name == "retrieve_full_text"
+                            and self._is_full_text_unavailable_error(e)
+                        ):
+                            pmcid = normalized_args.get("pmcid", "")
+                            yield self._build_full_text_unavailable_message(pmcid)
+                        else:
+                            yield "❌ Something went wrong: Please try again later.\n\n"
         else:
             # No tool calls, check if we have documents for already
             if self.documents:

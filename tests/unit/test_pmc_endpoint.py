@@ -9,10 +9,10 @@ from src.medlit_agent.pmc_service.pmc_endpoint import PMCEndpoint
 
 @pytest.fixture
 def mock_env_vars(monkeypatch):
-    """Set up environment variables for testing"""
+    """set up environment variables for testing"""
     monkeypatch.setenv("EMAIL", "test@example.com")
     monkeypatch.setenv("PMC_API_KEY", "test_api_key")
-    # Re-import to apply env vars
+    # re-import to apply env vars
     import importlib
 
     from src.medlit_agent.pmc_service import pmc_endpoint
@@ -22,7 +22,7 @@ def mock_env_vars(monkeypatch):
 
 @pytest.fixture
 def sample_esearch_response():
-    """Mock XML response from Entrez.esearch"""
+    """mock XML response from Entrez.esearch"""
     return """<?xml version="1.0"?>
     <!DOCTYPE eSearchResult PUBLIC "-//NLM//DTD eSearchResult, 11 May 2002//EN" "https://www.ncbi.nlm.nih.gov/entrez/query/DTD/eSearchResult.dtd">
     <eSearchResult>
@@ -35,7 +35,7 @@ def sample_esearch_response():
 
 @pytest.fixture
 def sample_article_xml():
-    """Sample PMC article XML for testing parse_article"""
+    """sample PMC article XML for testing parse_article"""
     return """<?xml version="1.0"?>
     <!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Archiving and Interchange DTD v1.0 20120330//EN" "JATS-archivearticle1.dtd">
     <article>
@@ -91,7 +91,7 @@ class TestPMCEndpointInit:
     def test_initialization_without_email(self, monkeypatch):
         monkeypatch.delenv("EMAIL", raising=False)
         monkeypatch.delenv("PMC_API_KEY", raising=False)
-        # Re-import to trigger class-level initialization
+        # re-import to trigger class-level initialization
         import importlib
 
         from src.medlit_agent.pmc_service import pmc_endpoint
@@ -109,7 +109,7 @@ class TestFetchPMCIds:
     def test_fetch_pmc_ids_success(
         self, mock_read, mock_esearch, mock_env_vars, sample_esearch_response
     ):
-        # Mock the Entrez API calls
+        # mock the Entrez API calls
         mock_esearch.return_value = MagicMock()
         mock_read.return_value = {"IdList": ["12345678", "87654321"]}
 
@@ -302,7 +302,7 @@ class TestParseArticle:
         root = ET.fromstring(xml)
         result = PMCEndpoint._parse_article(root, "777")
 
-        # Should not treat the year as an author surname.
+        # should not treat the year as an author surname.
         assert "2020, " not in result["apa_citation"]
         assert result["apa_citation"].startswith("Doe, J. (2020).")
 
@@ -340,7 +340,7 @@ class TestParseArticle:
         root = ET.fromstring(xml)
         result = PMCEndpoint._parse_article(root, "777")
 
-        # Should not raise error, citation should still be valid
+        # should not raise error, citation should still be valid
         assert "Test, T. (2024)" in result["apa_citation"]
         assert "5" in result["apa_citation"]  # Volume without issue
 
@@ -401,7 +401,7 @@ class TestCleanAbstract:
         raw = "Objective: To test something. Methods: We did tests. Results: Found results."
         cleaned = PMCEndpoint._clean_abstract(raw)
 
-        # First header won't have \n\n prefix, subsequent ones will
+        # first header won't have \n\n prefix, subsequent ones will
         assert "Objective:" in cleaned
         assert "\n\nMethods:" in cleaned
         assert "\n\nResults:" in cleaned
@@ -418,7 +418,7 @@ class TestCleanAbstract:
         raw = " ".join([f"{h}: Test." for h in headers])
         cleaned = PMCEndpoint._clean_abstract(raw)
 
-        # Verify all headers are present (may or may not have \n\n prefix depending on position)
+        # verify all headers are present
         for h in headers:
             assert f"{h}:" in cleaned
 
@@ -436,7 +436,7 @@ class TestCleanAbstract:
 class TestFormatAPA:
 
     def test_format_apa_complete(self):
-        """Test APA formatting with all fields present"""
+        """test APA formatting with all fields present"""
         citation = PMCEndpoint._format_apa(
             authors=["Smith, J.", "Doe, A."],
             year="2024",
@@ -494,8 +494,8 @@ class TestFormatAPA:
             doi="10.1234/test",
         )
 
-        assert "10()" not in citation  # Should not have empty parentheses
-        assert ", 10," in citation  # Volume only
+        assert "10()" not in citation  # should not have empty parentheses
+        assert ", 10," in citation  # volume only
 
     def test_format_apa_no_doi(self):
         citation = PMCEndpoint._format_apa(
@@ -522,10 +522,9 @@ class TestFetchPMCRecords:
     def test_fetch_pmc_records_success(
         self, mock_fetch_ids, mock_efetch, mock_fromstring, mock_parse, mock_env_vars
     ):
-        # Mock the ID fetching
+        # mock the Entrez API calls
         mock_fetch_ids.return_value = ["12345", "67890"]
 
-        # Mock the efetch response
         mock_efetch_handle = MagicMock()
         mock_efetch_handle.read.side_effect = [
             "<article>Article 1</article>",
@@ -534,11 +533,9 @@ class TestFetchPMCRecords:
         mock_efetch_handle.close = MagicMock()
         mock_efetch.return_value = mock_efetch_handle
 
-        # Mock XML parsing
         mock_root = MagicMock()
         mock_fromstring.return_value = mock_root
 
-        # Mock parse_article
         mock_parse.side_effect = [
             {
                 "pmcid": "12345",
@@ -585,9 +582,9 @@ class TestFetchPMCRecords:
         mock_root = MagicMock()
         mock_fromstring.return_value = mock_root
 
-        # Parse raises exception
+        # parse raises exception
         mock_parse.side_effect = Exception("Parse error")
 
-        # Should raise the exception since there's no error handling
+        # should raise the exception since there's no error handling
         with pytest.raises(Exception, match="Parse error"):
             PMCEndpoint.fetch_pmc_records("test")

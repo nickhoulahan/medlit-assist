@@ -20,6 +20,7 @@ DocumentPayload = Mapping[str, str]
 class MedlitChatState(TypedDict):
     user_input: str
     documents: List[DocumentPayload]
+    include_sources: NotRequired[bool]
     documents_context: NotRequired[str]
     system_prompt: NotRequired[str]
     human_prompt: NotRequired[str]
@@ -32,7 +33,9 @@ def _format_documents_context(state: MedlitChatState) -> dict[str, str]:
 
 def _build_synthesis_prompt(state: MedlitChatState) -> dict[str, str]:
     system, human = build_synthesis_prompts(
-        state["user_input"], state["documents_context"]
+        state["user_input"],
+        state["documents_context"],
+        include_sources=bool(state.get("include_sources", True)),
     )
     return {"system_prompt": system, "human_prompt": human}
 
@@ -73,16 +76,29 @@ def _run_graph(
     compiled_graph,
     user_input: str,
     documents: List[DocumentPayload],
+    include_sources: bool = True,
 ) -> List[AnyMessage]:
-    state = {"user_input": user_input, "documents": documents, "messages": []}
+    state = {
+        "user_input": user_input,
+        "documents": documents,
+        "include_sources": include_sources,
+        "messages": [],
+    }
     output = compiled_graph.invoke(state)
     return output["messages"]
 
 
 def build_synthesis_messages(
-    user_input: str, documents: List[DocumentPayload]
+    user_input: str,
+    documents: List[DocumentPayload],
+    include_sources: bool = True,
 ) -> List[AnyMessage]:
-    return _run_graph(_SYNTHESIS_GRAPH, user_input, documents)
+    return _run_graph(
+        _SYNTHESIS_GRAPH,
+        user_input,
+        documents,
+        include_sources=include_sources,
+    )
 
 
 def build_qa_messages(

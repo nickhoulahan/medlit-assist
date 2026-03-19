@@ -28,7 +28,7 @@ async def test_live_ollama_structured_qa_output():
     output = "".join(chunks)
 
     assert output.strip()
-    assert "Citations:" in output
+    assert "Answer:" in output
 
 
 async def test_live_ollama_structured_synthesis_output():
@@ -50,6 +50,6 @@ async def test_live_ollama_structured_synthesis_output():
     output = "".join(chunks)
 
     assert output.strip()
-    assert "What the research found" in output
-    assert "Why it matters" in output
-    assert "The science behind it" in output
+    assert "**What the research found:**" in output
+    assert "**Why it matters:**" in output
+    assert "**The science behind it:**" in output
