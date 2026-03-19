@@ -94,3 +94,51 @@ async def test_structured_qa_output_is_rendered(mock_ollama):
     assert "It may reduce risk." in output
     assert "Citations" in output
     assert "PMC123456" in output
+
+
+@pytest.mark.asyncio
+@patch("src.medlit_agent.agent.agent.ChatOllama")
+async def test_full_text_tool_output_omits_sources_section(mock_ollama):
+    mock_llm = MagicMock()
+    mock_ollama.return_value = mock_llm
+
+    mock_tool = MagicMock()
+    mock_tool.name = "retrieve_full_text"
+    mock_tool.description = "Retrieve full article sections"
+    mock_tool.invoke.return_value = [
+        {
+            "title": "Results",
+            "body": "Detailed findings about treatment effects.",
+        }
+    ]
+
+    first_response = SimpleNamespace(
+        tool_calls=[{"name": "retrieve_full_text", "args": {"pmcid": "PMC123456"}}],
+        content="",
+    )
+    synthesis_response = SimpleNamespace(
+        tool_calls=[],
+        content=(
+            '{"what_the_research_found": "Result A", '
+            '"why_it_matters": "Reason B", '
+            '"the_science_behind_it": "Mechanism C", '
+            '"sources": ["(Title, https://pmc.ncbi.nlm.nih.gov/articles/PMC123456)"]}'
+        ),
+    )
+
+    mock_llm.ainvoke = AsyncMock(side_effect=[first_response, synthesis_response])
+
+    agent = OllamaAgent(model="gpt-oss:20b", tools=[mock_tool])
+    agent.llm = mock_llm
+    agent.llm_with_tools = mock_llm
+
+    output_chunks = []
+    async for chunk in agent.astream("What did this article find?"):
+        output_chunks.append(chunk)
+
+    output = "".join(output_chunks)
+
+    assert "What the research found" in output
+    assert "Why it matters" in output
+    assert "The science behind it" in output
+    assert "Sources" not in output

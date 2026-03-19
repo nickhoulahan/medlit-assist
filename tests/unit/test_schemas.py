@@ -79,6 +79,22 @@ def test_render_research_synthesis_markdown_contains_sections():
     assert "Sources" in rendered
 
 
+def test_render_research_synthesis_markdown_can_omit_sources():
+    model = ResearchSynthesis(
+        what_the_research_found="Found A",
+        why_it_matters="Matters because B",
+        the_science_behind_it="Mechanism C",
+        sources=["(Title, https://pmc.ncbi.nlm.nih.gov/articles/PMC123)"],
+    )
+
+    rendered = model.to_markdown(include_sources=False)
+
+    assert "What the research found" in rendered
+    assert "Why it matters" in rendered
+    assert "The science behind it" in rendered
+    assert "Sources" not in rendered
+
+
 def test_render_article_qa_markdown_contains_answer_and_citations():
     model = ArticleQAAnswer(answer="Short answer", citations=["Article 1 (PMC123)"])
 

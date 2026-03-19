@@ -8,7 +8,7 @@ pytestmark = pytest.mark.asyncio
 def _model_name() -> str:
     import os
 
-    return os.getenv("OLLAMA_MODEL", "gpt-oss:20b")
+    return os.getenv("OLLAMA_MODEL", "qwen3:8b")
 
 
 async def test_live_ollama_structured_qa_output():

@@ -74,7 +74,11 @@ class OllamaAgent:
         return result
 
     async def _stream_synthesis(
-        self, *, user_input: str, documents: List[Dict[str, str]]
+        self,
+        *,
+        user_input: str,
+        documents: List[Dict[str, str]],
+        include_sources: bool = True,
     ) -> AsyncIterator[str]:
         synthesis_messages = build_synthesis_messages(user_input, documents)
         try:
@@ -85,7 +89,7 @@ class OllamaAgent:
                 else str(structured_response)
             )
             parsed = ResearchSynthesis.from_llm(content)
-            yield parsed.to_markdown()
+            yield parsed.to_markdown(include_sources=include_sources)
             return
         except Exception:
             # Fall back to plain streaming if structured parsing fails.
@@ -192,7 +196,9 @@ class OllamaAgent:
                                 yield f"📚 Retrieved {len(tool_result)} full-text sections. Let me explain what they show...\n\n"
 
                             async for chunk in self._stream_synthesis(
-                                user_input=user_input, documents=tool_result
+                                user_input=user_input,
+                                documents=tool_result,
+                                include_sources=(tool_name != "retrieve_full_text"),
                             ):
                                 yield chunk
 
