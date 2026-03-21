@@ -588,3 +588,37 @@ class TestFetchPMCRecords:
         # should raise the exception since there's no error handling
         with pytest.raises(Exception, match="Parse error"):
             PMCEndpoint.fetch_pmc_records("test")
+
+
+class TestFetchPmcidXml:
+
+    @patch("src.medlit_agent.pmc_service.pmc_endpoint.Entrez.efetch")
+    def test_fetch_pmcid_xml_returns_full_text(self, mock_efetch, mock_env_vars):
+        full_handle = MagicMock()
+        full_handle.read.return_value = "<article>Full XML</article>"
+        full_handle.close = MagicMock()
+        mock_efetch.return_value = full_handle
+
+        result = PMCEndpoint.fetch_pmcid_xml("PMC123")
+
+        assert result == "<article>Full XML</article>"
+        mock_efetch.assert_called_once_with(
+            db="pmc", id="PMC123", rettype="full", retmode="xml"
+        )
+
+    @patch("src.medlit_agent.pmc_service.pmc_endpoint.Entrez.efetch")
+    def test_fetch_pmcid_xml_raises_when_full_fetch_fails(
+        self, mock_efetch, mock_env_vars
+    ):
+        mock_efetch.side_effect = Exception("full failed")
+
+        with pytest.raises(Exception, match="full failed"):
+            PMCEndpoint.fetch_pmcid_xml("PMC456")
+
+        assert mock_efetch.call_count == 1
+        assert mock_efetch.call_args_list[0].kwargs == {
+            "db": "pmc",
+            "id": "PMC456",
+            "rettype": "full",
+            "retmode": "xml",
+        }

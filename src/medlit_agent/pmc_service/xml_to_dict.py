@@ -1,8 +1,6 @@
 from __future__ import annotations
 
-import json
 import re
-from pathlib import Path
 from typing import Dict, List
 
 from lxml import etree as ET
@@ -11,7 +9,7 @@ from lxml import etree as ET
 class XMLToDictConverter:
     """Extract article full text from NLM/JATS XML.
 
-    Get body from /pmc-articleset/article/body or //article/body fallback
+    get body from /pmc-articleset/article/body or //article/body fallback
     and convert section titles + paragraphs dict of chunks
     """
 
@@ -36,7 +34,7 @@ class XMLToDictConverter:
 
     @staticmethod
     def _localname(node: ET._Element) -> str | None:
-        """Return an element local name, skipping non-element iter nodes."""
+        """return an element local name, skipping non-element iter nodes."""
         tag = getattr(node, "tag", None)
         if not isinstance(tag, str):
             return None
@@ -48,7 +46,7 @@ class XMLToDictConverter:
         if body is not None:
             return body
 
-        # Namespace-aware fallback for documents that use a default namespace.
+        # namespace-aware fallback for documents that use a default namespace.
         for elem in root.iter():
             if cls._localname(elem) == "body":
                 return elem
@@ -98,7 +96,7 @@ class XMLToDictConverter:
                 if cls._localname(p) != "p":
                     continue
 
-                # Keep only paragraphs that belong to this section directly,
+                # keep only paragraphs that belong to this section directly,
                 # not nested subsections.
                 parent = p.getparent()
                 nearest_sec = None
@@ -120,81 +118,38 @@ class XMLToDictConverter:
                 yield {"title": title_text, "body": body_text}
 
     @classmethod
+    def _extract_body_paragraphs(cls, body: ET._Element) -> List[str]:
+        paragraphs: List[str] = []
+
+        for p in body.iter():
+            if cls._localname(p) != "p":
+                continue
+
+            para = cls._clean_text("".join(p.itertext()))
+            if para:
+                paragraphs.append(para)
+
+        return paragraphs
+
+    @classmethod
     def convert(
         cls,
         xml_content: str | bytes,
     ) -> List[Dict[str, str]]:
-        """Return article sections from XML ``body`` as title/body dictionaries."""
+        """return article sections from XML ``body`` as title/body dictionaries."""
         root = cls._parse_xml(xml_content)
         body = cls._find_body(root)
         if body is None:
             raise ValueError(
                 "No <body> element found in XML; cannot extract full text."
             )
+        sections = list(cls._iter_body_blocks(body))
+        if sections:
+            return sections
 
-        return list(cls._iter_body_blocks(body))
+        # some PMC documents have paragraphs under <body> but no <sec> wrappers.
+        paragraphs = cls._extract_body_paragraphs(body)
+        if not paragraphs:
+            return []
 
-
-def _find_project_root(start: Path) -> Path:
-    for parent in [start, *start.parents]:
-        if (parent / "pyproject.toml").exists() or (parent / ".git").exists():
-            return parent
-    return start
-
-
-if __name__ == "__main__":  # pragma: no cover
-    import argparse
-    import sys
-
-    project_root = _find_project_root(Path(__file__).resolve())
-    if str(project_root) not in sys.path:
-        sys.path.insert(0, str(project_root))
-
-    from src.medlit_agent.pmc_service.pmc_endpoint import PMCEndpoint
-
-    default_output = project_root / "tmp" / "article-full-text.json"
-    tmp_dir = project_root / "tmp"
-
-    parser = argparse.ArgumentParser(
-        description="Extract plain-text full article body from an XML document."
-    )
-    input_group = parser.add_mutually_exclusive_group(required=True)
-    input_group.add_argument(
-        "xml_path",
-        nargs="?",
-        help="Path to the source XML file",
-    )
-    input_group.add_argument(
-        "--pmcid",
-        help="PMC ID to fetch from Entrez and convert directly (e.g., PMC1013555)",
-    )
-    parser.add_argument(
-        "-o",
-        "--output",
-        default=str(default_output),
-        help="Output text path",
-    )
-
-    args = parser.parse_args()
-
-    if args.pmcid:
-        xml_text = PMCEndpoint.fetch_pmcid_xml(args.pmcid)
-        source_name = f"{args.pmcid}.xml"
-        tmp_dir.mkdir(parents=True, exist_ok=True)
-        xml_out_path = tmp_dir / source_name
-        xml_out_path.write_text(xml_text, encoding="utf-8")
-        print(f"Wrote source XML: {xml_out_path}")
-    else:
-        source = Path(args.xml_path)
-        xml_text = source.read_text(encoding="utf-8")
-        source_name = source.name
-
-    sections = XMLToDictConverter.convert(xml_text)
-
-    out_path = Path(args.output)
-    out_path.parent.mkdir(parents=True, exist_ok=True)
-    out_path.write_text(
-        json.dumps(sections, ensure_ascii=False, indent=2),
-        encoding="utf-8",
-    )
-    print(f"Wrote full-text output: {out_path}")
+        return [{"title": "Body", "body": "\n\n".join(paragraphs)}]

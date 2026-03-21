@@ -208,10 +208,19 @@ class PMCEndpoint:
         return citation
 
     @classmethod
+    def _read_efetch(cls, pmcid: str, rettype: str, retmode: str) -> str:
+        handle = cls.endpoint.efetch(
+            db="pmc", id=pmcid, rettype=rettype, retmode=retmode
+        )
+        try:
+            data = handle.read()
+        finally:
+            handle.close()
+
+        if isinstance(data, bytes):
+            return data.decode("utf-8", errors="replace")
+        return data
+
+    @classmethod
     def fetch_pmcid_xml(cls, pmcid: str) -> str:
-        handle = cls.endpoint.efetch(db="pmc", id=pmcid, rettype="full", retmode="xml")
-        xml_data = handle.read()
-        handle.close()
-        if isinstance(xml_data, bytes):
-            return xml_data.decode("utf-8", errors="replace")
-        return xml_data
+        return cls._read_efetch(pmcid=pmcid, rettype="full", retmode="xml")
