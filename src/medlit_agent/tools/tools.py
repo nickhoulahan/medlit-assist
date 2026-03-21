@@ -1,7 +1,6 @@
 from typing import Dict, List
 
 from langchain_core.tools import tool
-from langsmith import traceable
 
 from src.medlit_agent.pmc_service.full_text_retriever import FullTextRetriever
 from src.medlit_agent.pmc_service.pmc_endpoint import PMCEndpoint
