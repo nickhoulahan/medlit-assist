@@ -3,10 +3,14 @@ from pathlib import Path
 import pytest
 from lxml import etree as ET
 
-from src.medlit_agent.pmc_service.xml_to_dict import (
-    XMLToDictConverter,
-    _find_project_root,
-)
+from src.medlit_agent.pmc_service.xml_to_dict import XMLToDictConverter
+
+
+def _find_project_root(start: Path) -> Path:
+  for parent in [start, *start.parents]:
+    if (parent / "pyproject.toml").exists() or (parent / ".git").exists():
+      return parent
+  return start
 
 
 def test_parse_xml_invalid_raises_value_error():
@@ -82,7 +86,33 @@ def test_iter_body_blocks_skips_missing_and_blank_titles():
     </article>
     """
 
-    assert XMLToDictConverter.convert(xml) == []
+    sections = XMLToDictConverter.convert(xml)
+
+    assert len(sections) == 1
+    assert sections[0]["title"] == "Body"
+    assert sections[0]["body"] == (
+        "Section with no title should be skipped.\n\nBlank title should be skipped."
+    )
+
+
+def test_convert_falls_back_to_body_paragraphs_without_sections():
+    xml = """
+    <article>
+      <body>
+        <p>Paragraph one from body.</p>
+        <p>Paragraph two from body.</p>
+      </body>
+    </article>
+    """
+
+    sections = XMLToDictConverter.convert(xml)
+
+    assert sections == [
+        {
+            "title": "Body",
+            "body": "Paragraph one from body.\n\nParagraph two from body.",
+        }
+    ]
 
 
 def test_find_project_root_prefers_marker_and_falls_back_to_start(tmp_path: Path):

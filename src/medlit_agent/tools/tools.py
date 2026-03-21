@@ -8,13 +8,13 @@ from src.medlit_agent.pmc_service.pmc_endpoint import PMCEndpoint
 
 
 @tool
-def search_pubmed_central(query: str, max_results: int = 3) -> List[Dict[str, str]]:
+def search_pubmed_central(query: str, max_results: int = 5) -> List[Dict[str, str]]:
     """
     Search PubMed Central for biomedical research articles.
 
     Args:
         query: The search query (e.g., "cancer therapy", "diabetes treatment")
-        max_results: Maximum number of articles to return (default: 3)
+        max_results: Maximum number of articles to return (default: 5)
 
     Returns:
         List of articles with PMC ID, APA citation, and abstract
@@ -39,7 +39,10 @@ def search_pubmed_central(query: str, max_results: int = 3) -> List[Dict[str, st
 
 @tool
 def retrieve_full_text(pmcid: str) -> List[Dict[str, str]]:
-    """Retrieve full text sections for a given PMC ID to answer questions on article-spefic user queries.
+    """Retrieve full text sections for a given PMC ID article in response to a 
+    user's query about follow questions about a specific article. For example, if the
+    user is following up on a previous search and wants to know more details about a specific article.
+    Exmple: How does the second article in your response discuss medication side effects?
     Args:
         pmcid: The PMC ID of the article (e.g., "PMC1013555")
         Returns: List of full text sections with title and body

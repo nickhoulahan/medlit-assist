@@ -45,7 +45,7 @@ class TestSearchPubmedCentral:
 
         search_pubmed_central.invoke({"query": "test"})
 
-        mock_fetch.assert_called_once_with("test", retmax=3)
+        mock_fetch.assert_called_once_with("test", retmax=5)
 
     @patch("src.medlit_agent.tools.tools.PMCEndpoint.fetch_pmc_records")
     def test_search_pubmed_central_empty_results(self, mock_fetch):
