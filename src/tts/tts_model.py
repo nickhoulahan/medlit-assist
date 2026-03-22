@@ -9,7 +9,10 @@ from kokoro import KPipeline
 class TTSModel:
     """
     Text-to-speech model using Kokoro TTS.
-    methods to interpret audio credit to cookbook https://github.com/Chainlit/cookbook/blob/main/openai-whisper/app.py
+    Args:
+        voice (str): Voice identifier for Kokoro TTS.
+        lang_code (str): Language code for Kokoro TTS.
+        sample_rate (int): Sample rate for the generated audio.
     """
 
     def __init__(
