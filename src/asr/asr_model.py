@@ -5,6 +5,7 @@ from typing import Any, Optional
 
 import numpy as np
 import torch
+from scipy import signal
 from transformers import AutoModelForSpeechSeq2Seq, AutoProcessor
 
 
@@ -49,22 +50,13 @@ class ASRModel:
         target_sample_rate: int,
     ) -> np.ndarray:
         audio = np.asarray(audio, dtype=np.float32)
-
-        if original_sample_rate == target_sample_rate:
+        if original_sample_rate == target_sample_rate or audio.size == 0:
             return audio
 
-        if audio.size == 0:
-            return audio.astype(np.float32)
-
-        target_length = int(
-            round(audio.shape[0] * target_sample_rate / original_sample_rate)
+        resampled = signal.resample_poly(
+            audio, target_sample_rate, original_sample_rate
         )
-        if target_length <= 1:
-            return audio[:1].astype(np.float32)
 
-        original_positions = np.linspace(0.0, 1.0, num=audio.shape[0], dtype=np.float64)
-        target_positions = np.linspace(0.0, 1.0, num=target_length, dtype=np.float64)
-        resampled = np.interp(target_positions, original_positions, audio)
         return resampled.astype(np.float32)
 
     def _load_wav(self, audio_input: Path) -> tuple[np.ndarray, int]:
