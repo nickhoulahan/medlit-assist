@@ -133,7 +133,7 @@ async def _send_tts_audio_if_enabled(response_text: str, response_message: cl.Me
         wav_bytes, _ = tts_model.synthesize_speech_wav_bytes(tts_text)
         audio = cl.Audio(
             content=wav_bytes,
-            name="medlit-response.wav",
+            name="medlit-response",
             mime="audio/wav",
             auto_play=True,
         )

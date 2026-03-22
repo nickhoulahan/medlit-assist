@@ -59,10 +59,10 @@ class TTSModel:
         pcm16 = (audio * 32767.0).astype(np.int16)
 
         buffer = BytesIO()
-        with wave.open(buffer, "wb") as wav_file:
-            wav_file.setnchannels(1)
-            wav_file.setsampwidth(2)
-            wav_file.setframerate(sample_rate)
-            wav_file.writeframes(pcm16.tobytes())
+        with wave.open(buffer, "wb") as wav_obj:
+            wav_obj.setnchannels(1)
+            wav_obj.setsampwidth(2)
+            wav_obj.setframerate(sample_rate)
+            wav_obj.writeframes(pcm16.tobytes())
 
         return buffer.getvalue()
