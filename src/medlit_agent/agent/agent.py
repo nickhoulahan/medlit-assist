@@ -23,8 +23,6 @@ class OllamaAgent:
         model: str,
         tools: List = None,
         temperature: float = 0.0,
-        stream_chunk_size: int = 24,
-        stream_chunk_delay: float = 0.02,
     ):
         """
         Ollama agent with tools.
@@ -33,15 +31,11 @@ class OllamaAgent:
             model: the Ollama model id to use
             tools: list of LangChain tools to provide to the agent
             temperature: model temperature (0-1), default 0.0
-            stream_chunk_size: characters per streamed chunk for structured outputs
-            stream_chunk_delay: delay (seconds) between streamed chunks
         """
         self.model = model
         self.tools_list = tools or []
         self.tools = {tool.name: tool for tool in self.tools_list}
         self.documents = []  # for storing fetched documents
-        self.stream_chunk_size = max(1, stream_chunk_size)
-        self.stream_chunk_delay = max(0.0, stream_chunk_delay)
         self.last_validated_response: Optional[str] = None
 
         # ChatOllama instance
@@ -50,11 +44,11 @@ class OllamaAgent:
             temperature=temperature,
         )
 
-        # bind tools to llm
+        # Bind tools to llm
         try:
             self.llm_with_tools = self.llm.bind_tools(self.tools_list)
         except Exception:
-            # fallback to base llm if tool binding fails to keep agent usable
+            # Fallback to base llm if tool binding fails to keep agent usable
             self.llm_with_tools = self.llm
 
     def _extract_tool_args(
@@ -74,11 +68,11 @@ class OllamaAgent:
     def _run_tool(
         self, tool_name: str, tool_args: Dict[str, Any]
     ) -> List[Dict[str, str]]:
-        """executes a single tool call and normalize storage for follow-up Q&A."""
+        """Executes a single tool call and normalize storage for follow-up Q&A."""
         tool = self.tools[tool_name]
         result = tool.invoke(tool_args)
 
-        # store documents in memory for follow-up Q&A.
+        # Store documents in memory for follow-up Q&A.
         # (Keeping as list[dict] to preserve existing app/tests expectations.)
         # different from chroma vector DB caching.
         self.documents = result
@@ -316,12 +310,12 @@ class OllamaAgent:
                             ):
                                 yield chunk
 
-                            # offer to answer follow up question for accessibility
+                            # Offer to answer follow up question for accessibility
                             yield f"\n\n---\n\n💡 *Any other follow-up questions? Just ask!*"
                         else:
                             yield "No articles found for that query."
                     except Exception as e:
-                        # account for when full text is not available or rights prohibited
+                        # Account for when full text is not available or rights prohibited
                         if (
                             tool_name == "retrieve_full_text"
                             and self._is_full_text_unavailable_error(e)

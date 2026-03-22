@@ -45,8 +45,6 @@ async def start():
         model="qwen3:8b",
         tools=tools,
         temperature=0.0,
-        stream_chunk_size=18,
-        stream_chunk_delay=0.025,
     )
     asr_model = ASRModel(model_name="openai/whisper-large-v3")
     tts_model = TTSModel()
