@@ -1,8 +1,10 @@
+import os
 import wave
 from io import BytesIO
 from pathlib import Path
 
 import numpy as np
+import torch
 from kokoro import KPipeline
 
 
@@ -21,6 +23,9 @@ class TTSModel:
         lang_code: str = "a",
         sample_rate: int = 24000,
     ) -> None:
+        # set MPS environment variable for Mac M1/M2/M3/M4 support
+        if torch.backends.mps.is_available():
+            os.environ["PYTORCH_ENABLE_MPS_FALLBACK"] = "1"
         self.voice = voice
         self.sample_rate = sample_rate
         self.pipeline = KPipeline(lang_code=lang_code)
