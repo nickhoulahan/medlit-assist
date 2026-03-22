@@ -53,8 +53,13 @@ class ASRModel:
         if original_sample_rate == target_sample_rate or audio.size == 0:
             return audio
 
+        # account for multi-channel audio
+        resample_axis = 0
+        if audio.ndim > 1:
+            resample_axis = 1
+
         resampled = signal.resample_poly(
-            audio, target_sample_rate, original_sample_rate
+            audio, target_sample_rate, original_sample_rate, axis=resample_axis
         )
 
         return resampled.astype(np.float32)
