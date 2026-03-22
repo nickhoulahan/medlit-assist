@@ -186,6 +186,7 @@ async def on_audio_end():
     with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as tmp_file:
         wav_path = tmp_file.name
 
+    # processing audio credit https://github.com/Chainlit/cookbook/blob/main/openai-whisper/app.py
     try:
         with wave.open(wav_path, "wb") as wav_file:
             wav_file.setnchannels(1)
