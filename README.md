@@ -155,15 +155,19 @@ You can generate a report for a subset of MedQA questions using:
 - [Noise Sensitivity](https://docs.ragas.io/en/latest/concepts/metrics/available_metrics/noise_sensitivity/)
 - [Semantic Similarity](https://docs.ragas.io/en/stable/concepts/metrics/available_metrics/semantic_similarity/)
 
-Test answer relevancy (no reference text available, but uses prepared questions at tests/evals/ragas/doc_questions/)
+To run the fulltext evaluation mode that evaluates answer relevancy only, run:
 
 ```bash
 python -m tests.evals.ragas.run_medqa_ragas_eval --eval-mode fulltext --agent-model qwen3:8b --evaluator-model gpt-4.1-mini-2025-04-14
 ```
 
-Test all metrics with random sample of MedQA answer (can vary sample-size and seed to mix results)
-Note, keep sample-size small due to duration of tests and tokens needed.
-Currently one needs an API key for openAI's GPT4.1 model used in the evaluations (copy into your .env file from report instructions)
+To run all the above metrics on search mode (i.e. search tool call and context use), run: 
+
+(Test all metrics with random sample of MedQA answer -- these can vary by sample-size and seed to mix results)
+
+Please keep sample-size small due to duration of tests and tokens needed.
+
+In addition, you will need an API key for openAI's GPT4.1 model used in the evaluations (copy into your .env file from report instructions)
 
 ```bash
 python -m tests.evals.ragas.run_medqa_ragas_eval --eval-mode search --sample-size 3 --seed 42 --agent-model qwen3:8b --evaluator-model gpt-4.1-mini-2025-04-14
