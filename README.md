@@ -56,7 +56,7 @@ Create a `.env` file in the root directory.
 Copy .env.example to .env
 
 ```bash
-cp .env.exampl .env
+cp .env.example .env
 ```
 Follow the instructions in the report to insert the right varibles.
 
