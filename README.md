@@ -194,9 +194,12 @@ python -m tests.evals.tts.run_tts_evals
 
 ## Technologies Used
 
-- **Chainlit** - Interactive chat interface
-- **LangChain** - LLM orchestration and tool integration
-- **Ollama** - Local LLM inference
+- **Chainlit** - Interactive chat interface with streaming text response, voice transciption, and spoken output
+- **LangChain** - LLM orchestration, LangGraph state handling, and tool integration
+- **Ollama** - Local LLM inference with Qwen3:8b
+- **ASR transcription*** - openai/whisper-large-v3
+- **TTS spoken response*** - hexgrad/Kokoro-82M
 - **Biopython** - NCBI E-utilities wrapper with Entrez
-- **PubMed Central** - Biomedical literature database
+- **PubMed Central** - Biomedical literature database for RAG operations
+- **ChromaDB Vector Store** - Document chunk retrieval with SBERT embeddings
 
