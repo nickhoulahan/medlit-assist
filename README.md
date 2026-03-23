@@ -93,6 +93,12 @@ chainlit run app.py -w
 
 The application will be available at `http://localhost:8000`
 
+Once finished, you can stop the Qwen model by running:
+
+```bash
+ollama stop qwen3:8b
+```
+
 
 ### Using the Assistant
 
