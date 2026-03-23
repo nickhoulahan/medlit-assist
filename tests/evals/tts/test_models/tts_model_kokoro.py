@@ -5,9 +5,6 @@ import soundfile as sf
 
 class TTSModel:
 
-    # set 
-    
-
     curr_dir = Path(__file__).parent.__str__()
     output_dir = Path(__file__).parent.parent / "test_output" / "tts_kokoro.wav"
 
