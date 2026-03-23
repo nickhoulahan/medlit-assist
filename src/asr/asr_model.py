@@ -50,7 +50,11 @@ class ASRModel:
         target_sample_rate: int,
     ) -> np.ndarray:
         audio = np.asarray(audio, dtype=np.float32)
-        if original_sample_rate == target_sample_rate or audio.size == 0:
+        if (
+            original_sample_rate == target_sample_rate
+            or audio.size == 0
+            or audio.shape[0] == 1
+        ):
             return audio
 
         # account for multi-channel audio

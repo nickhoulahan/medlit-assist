@@ -21,6 +21,20 @@ Simply ask me about any biomedical or health topic! For example:
 
 I'll search PubMed Central, analyze the research, and explain the findings in a way that anyone can understand.
 
+If you want to ask a follow up question about any of the articles, phrase your question like "Can you review the first article and tell me more about ...?"
+
+To activate the Speech recognition toggle the voice command:
+
+<p align="center">
+  <img src="./public/activate_asr.png" alt="MedLit Assist ASR" width="200"/>
+</p>
+
+To activate the Spoken response, click the setting gear and slider:
+
+<p align="center">
+  <img src="./public/activate_tts.png" alt="MedLit Assist TTS" width="200"/>
+</p>
+
 ---
 
 **Ready to explore medical research?** Just type your question below! 👇
