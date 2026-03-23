@@ -25,15 +25,11 @@ If you want to ask a follow up question about any of the articles, phrase your q
 
 To activate the Speech recognition toggle the voice command:
 
-<p align="center">
-  <img src="./public/activate_asr.png" alt="MedLit Assist ASR" width="200"/>
-</p>
+![MedLit Assist ASR](/public/activate_asr.png)
 
 To activate the Spoken response, click the setting gear and slider:
 
-<p align="center">
-  <img src="./public/activate_tts.png" alt="MedLit Assist TTS" width="200"/>
-</p>
+![MedLit Assist TTS](/public/activate_tts.png)
 
 ---
 
