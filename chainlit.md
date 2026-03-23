@@ -31,7 +31,4 @@ To activate the Spoken response, click the setting gear and slider:
 
 ![MedLit Assist TTS](/public/activate_tts.png)
 
----
-
-**Ready to explore medical research?** Just type your question below! 👇
 
